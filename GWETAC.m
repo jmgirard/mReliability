@@ -1,6 +1,6 @@
-function [AC, SE, CI, IMP, BM, p_a, p_e] = GWETAC(M, type, f)
+function [AC, p_a, p_e, SE, CI, IMP, BM] = GWETAC(M, type, f)
 % Calculate Gwet's Agreement Coefficient (AC1/AC2)
-%   [AC, SE, CI, IMP, BM, p_a, p_e] = GWETAC(M, type, f)
+%   [AC, p_a, p_e, SE, CI, IMP, BM] = GWETAC(M, type, f)
 %
 %	M is a numerical matrix of measurements. Each row is an object of
 %	measurement and each column is a single source of measurement.
@@ -24,6 +24,10 @@ function [AC, SE, CI, IMP, BM, p_a, p_e] = GWETAC(M, type, f)
 %	measurement that corrects for agreement due to chance.
 %	It is more "paradox-resistant" than most other agreement indices.
 %
+%	p_a is the percent agreement observed between sources of measurement.
+%
+%	p_e is the percent agreement expected to be due to random guessing. 
+%   
 %	SE is the standard error of the AC estimate (conditional on rater sample).
 %
 %	CI is a two-element vector containing the lower and upper bounds of
@@ -38,10 +42,6 @@ function [AC, SE, CI, IMP, BM, p_a, p_e] = GWETAC(M, type, f)
 %
 %	BM is the final benchmark identified by the 95% Rule, which stipulates
 %	using the highest level which has a cumulative probability over 0.95
-%
-%	p_a is the percent agreement observed between sources of measurement.
-%
-%	p_e is the percent agreement expected to be due to random guessing. 
 %
 %   (c) Jeffrey M Girard, 2015
 %   
@@ -147,6 +147,12 @@ p_e = mean(p_e_i);
 
 %% Calculate AC point estimate
 AC = (p_a - p_e) / (1 - p_e);
+
+%% Return if variance is not requested
+if nargout <=3
+    SE = NaN; CI = [NaN,NaN]; IMP = NaN; BM = '';
+    return;
+end
 
 %% Calculate the variance of the AC point estimate
 v_inner = nan(n,1);
