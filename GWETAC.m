@@ -50,9 +50,7 @@ function [AC, p_a, p_e, SE, CI, IMP, BM] = GWETAC(M, type, f)
 %       among raters (4th ed.). Gaithersburg, MD: Advanced Analytics.
 
 %% Calculate variables
-if nargin < 3
-    f = 0;
-end
+if nargin < 3, f = 0; end
 M(all(~isfinite(M),2),:) = [];
 [n,~] = size(M);
 x = unique(M(:));
@@ -96,6 +94,7 @@ for k = 1:q
                 end
             case 'ratio'
                 w(k,l) = 1 - (((x(k) - x(l)) / (x(k) + x(l)))^2) / (((max(x) - min(x)) / (max(x) + min(x)))^2);
+                if x(k)==0 && x(l)==0, w(k,l) = 1; end
             otherwise
                 error('Type must be nominal, ordinal, linear, quadratic, radical, or ratio');
         end
