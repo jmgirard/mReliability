@@ -8,8 +8,8 @@ function [ICC,LB,UB] = ICC_A_1(DATA,ALPHA)
 %
 %   ALPHA is the Type I error rate for the confidence interval (optional).
 %
-%   ICC is reliability of the ratings for a single rater taken from the
-%   pool of included raters. Agreement is gauged on an absolute scale.
+%   ICC is the reliability of the ratings taken from any single included
+%   rater. Reliability is gauged as agreement on an absolute scale.
 %
 %   LB and UB are the confidence interval's lower and upper bounds.
 %
