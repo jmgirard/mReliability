@@ -4,7 +4,6 @@ function [ICC,LB,UB] = ICC_A_k(DATA,ALPHA)
 %
 %   DATA is a numerical matrix of ratings with no missing values.
 %   Each row is a single item and each column is a single rater.
-%   This coefficient is appropriate for interval or ratio measurements.
 %
 %   ALPHA is the Type I error rate for the confidence interval (optional).
 %
@@ -48,8 +47,8 @@ if nargout > 1
     a   = (k*ICC) / (n*(1 - ICC));
     b   = 1 + (k*ICC*(n - 1))/(n*(1 - ICC));
     v   = ((a*MSC + b*MSE)^2) / (((a*MSC)^2)/(k - 1) + ((b*MSE)^2)/((n - 1)*(k - 1)));
-    FL = finv(1 - ALPHA/2,n - 1,v);
-    FU = finv(1 - ALPHA/2,v,n - 1);
+    FL = finv((1 - ALPHA/2),(n - 1),v);
+    FU = finv((1 - ALPHA/2),v,(n - 1));
     LB  = (n*(MSR - FL*MSE)) / (FL*(MSC - MSE) + n*MSR);
     UB  = (n*(FU*MSR - MSE)) / (MSC - MSE + n*FU*MSR);
 end
