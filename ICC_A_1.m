@@ -2,7 +2,7 @@ function [ICC,LB,UB] = ICC_A_1(DATA,ALPHA)
 % Calculate the single rater agreement intraclass correlation coefficient
 %   [ICC,LB,UB] = ICC_A_1(DATA)
 %
-%   DATA is a numerical matrix of ratings with no missing values.
+%   DATA is a numerical matrix of ratings (missing values = NaN).
 %   Each row is a single item and each column is a single rater.
 %
 %   ALPHA is the Type I error rate for the confidence interval (optional).
@@ -18,6 +18,9 @@ function [ICC,LB,UB] = ICC_A_1(DATA,ALPHA)
 %   Forming inferences about some intraclass correlation coefficients. 
 %   Psychological Methods, 1(1), 30–46.
 
+%% Remove any missing values
+[rowindex,~] = find(~isfinite(DATA));
+DATA(rowindex,:) = [];
 %% Calculate descriptive statistics
 [n,k] = size(DATA);
 y = mean(DATA(:));
