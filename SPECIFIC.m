@@ -1,10 +1,10 @@
 function [P_S, VALUES, SE, CI] = SPECIFIC(DATA, ALPHA, NBOOT, PARALLEL)
 % Calculate Specific Agreement for Categorical Annotations
-%   [P_S, VALUES, SE, CI] = SPECIFIC(DATA)
+%   [P_S, VALUES, SE, CI] = SPECIFIC(DATA, ALPHA, NBOOT, PARALLEL)
 %
-%	DATA is a numerical matrix of codes with missing data indicated by NaN.
+%   DATA is a numerical matrix of codes with missing data indicated by NaN.
 %   Each row is a single item and each column is a single coder.
-%	Codes should be numerical (e.g., NEGATIVE => -1, NEUTRAL => 0, POSITIVE => 1).
+%   Codes should be numerical (e.g., NEGATIVE => -1, NEUTRAL => 0, POSITIVE => 1).
 %
 %   ALPHA is the Type I error rate for the confidence interval (optional).
 %
