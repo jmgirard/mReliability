@@ -1,6 +1,6 @@
-function [P_S, VALUES, SE, CI] = SPECIFIC(DATA, ALPHA, NBOOT, PARALLEL)
+function [P_S, VALUES, SE, CI] = SAGREE(DATA, ALPHA, NBOOT, PARALLEL)
 % Calculate Specific Agreement for Categorical Annotations
-%   [P_S, VALUES, SE, CI] = SPECIFIC(DATA, ALPHA, NBOOT, PARALLEL)
+%   [P_S, VALUES, SE, CI] = SAGREE(DATA, ALPHA, NBOOT, PARALLEL)
 %
 %   DATA is a numerical matrix of codes with missing data indicated by NaN.
 %   Each row is a single item and each column is a single coder.
