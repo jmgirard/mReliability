@@ -47,13 +47,13 @@ if nargout > 1
     if nargin < 2
         ALPHA = 0.05;
     end
-    a   = (k*ICC) / (n*(1 - ICC));
-    b   = 1 + (k*ICC*(n - 1))/(n*(1 - ICC));
-    v   = ((a*MSC + b*MSE)^2) / (((a*MSC)^2)/(k - 1) + ((b*MSE)^2)/((n - 1)*(k - 1)));
+    c  = ICC / (n*1 - ICC);
+    d  = 1 + (p*(n - 1)) / (n*(1 - ICC));
+    v  = ((c*MSC + d*MSE)^2) / (((c*MSC)^2)/(k - 1) + ((d*MSE)^2)/((n - 1)*(k - 1)));
     FL = finv((1 - ALPHA/2),(n - 1),v);
     FU = finv((1 - ALPHA/2),v,(n - 1));
-    LB  = (n*(MSR - FL*MSE)) / (FL*(MSC - MSE) + n*MSR);
-    UB  = (n*(FU*MSR - MSE)) / (MSC - MSE + n*FU*MSR);
+    LB = (n*(MSR - FL*MSE)) / (FL*(MSC - MSE) + n*MSR);
+    UB = (n*(FU*MSR - MSE)) / (MSC - MSE + n*FU*MSR);
 end
 
 end
