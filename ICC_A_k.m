@@ -21,26 +21,13 @@ function [ICC,LB,UB] = ICC_A_k(DATA,ALPHA)
 %% Remove any missing values
 [rowindex,~] = find(~isfinite(DATA));
 DATA(rowindex,:) = [];
-%% Calculate descriptive statistics
+%% Calculate mean squares from two-way ANOVA
+[~,tbl,~] = anova2(DATA,1,'off');
+MSC = tbl{2,4};
+MSR = tbl{3,4};
+MSE = tbl{4,4};
+%% Calculate average rater agreement ICC
 [n,k] = size(DATA);
-y = mean(DATA(:));
-y_j = mean(DATA,1);
-y_i = mean(DATA,2);
-%% Calculate row, column, and error sums of squares
-SSR = 0;
-SSC = 0;
-SSE = 0;
-for i = 1:n
-    for j = 1:k
-        SSR = SSR + (y_i(i) - y)^2;
-        SSC = SSC + (y_j(j) - y)^2;
-        SSE = SSE + (DATA(i,j) - y_j(j) - y_i(i) + y)^2;
-    end
-end
-%% Calculate the mean sums of squares and ICC(A,k)
-MSR = SSR / (n - 1);
-MSE = SSE / ((n - 1)*(k - 1));
-MSC = SSC / (k - 1);
 ICC = (MSR - MSE) / (MSR + (MSC - MSE)/n);
 %% Calculate the confidence interval if requested
 if nargout > 1

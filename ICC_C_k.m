@@ -21,23 +21,12 @@ function [ICC,LB,UB] = ICC_C_k(DATA,ALPHA)
 %% Remove any missing values
 [rowindex,~] = find(~isfinite(DATA));
 DATA(rowindex,:) = [];
-%% Calculate descriptive statistics
+%% Calculate mean squares from two-way ANOVA
+[~,tbl,~] = anova2(DATA,1,'off');
+MSR = tbl{3,4};
+MSE = tbl{4,4};
+%% Calculate average rater consistency ICC
 [n,k] = size(DATA);
-y = mean(DATA(:));
-y_j = mean(DATA,1);
-y_i = mean(DATA,2);
-%% Calculate row, column, and error sums of squares
-SSR = 0;
-SSE = 0;
-for i = 1:n
-    for j = 1:k
-        SSR = SSR + (y_i(i) - y)^2;
-        SSE = SSE + (DATA(i,j) - y_j(j) - y_i(i) + y)^2;
-    end
-end
-%% Calculate the mean sums of squares and ICC(C,k)
-MSR = SSR / (n - 1);
-MSE = SSE / ((n - 1)*(k - 1));
 ICC = (MSR - MSE) / MSR;
 %% Calculate the confidence interval if requested
 if nargout > 1
@@ -46,8 +35,8 @@ if nargout > 1
     end
     FL = (MSR/MSE) / finv((1-ALPHA/2),(n - 1),(n - 1)*(k - 1));
     FU = (MSR/MSE) / finv((1-ALPHA/2),(n - 1)*(k - 1),(n - 1));
-    LB  = 1 - 1/FL;
-    UB  = 1 - 1/FU;
+    LB = 1 - 1/FL;
+    UB = 1 - 1/FU;
 end
 
 end
