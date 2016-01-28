@@ -1,22 +1,22 @@
 function [S, P_A, P_E, SE, CI] = FULL_S(DATA, SCALE, RATIO)
 % Calculate the generalized form of the S index and its properties
-%   [S, P_A, P_E, SE, CI] = FULL_S(DATA, TYPE, RATIO)
+%	[S, P_A, P_E, SE, CI] = FULL_S(DATA, TYPE, RATIO)
 %
 %	DATA is a numerical matrix of codes with missing data indicated by NaN.
-%   Each row is a single item and each column is a single coder. Any number
-%   of coders and categories can be used. Codes should be made numerical
-%   (e.g., LOW=>1, MEDIUM=>2, HIGH=>3; APPLE=>1, ORANGE=>2, BANANA=>3).
+%	Each row is a single item and each column is a single coder. Any number
+%	of coders and categories can be used. Codes should be made numerical
+%	(e.g., LOW=>1, MEDIUM=>2, HIGH=>3; APPLE=>1, ORANGE=>2, BANANA=>3).
 %
-%   SCALE is a string corresponding to the type of weights to be used.
-%   'nominal' weights are used for unordered categories
-%   'ordinal' weights are used for ordered categories of unequal size
-%   'interval' weights are used for ordered categories with equal spacing
-%   'ratio' weights are used for ordered categories with a meaningful zero
+%	SCALE is a string corresponding to the type of weights to be used.
+%	'nominal' weights are used for unordered categories
+%	'ordinal' weights are used for ordered categories of unequal size
+%	'interval' weights are used for ordered categories with equal spacing
+%	'ratio' weights are used for ordered categories with a meaningful zero
 %
 %	RATIO is the sampling fraction for the current reliability experiment.
 %	To generalize from a sample of n items to a population of N items, set
-%   RATIO to the fraction of n to N (i.e., n/N). If the population size is
-%   unknown, then use the default of 0. This parameter is optional.
+%	RATIO to the fraction of n to N (i.e., n/N). If the population size is
+%	unknown, then use the default of 0. This parameter is optional.
 %
 %	S is a chance-corrected agreement index that estimates chance
 %	agreement using a category-based approach.
@@ -30,11 +30,11 @@ function [S, P_A, P_E, SE, CI] = FULL_S(DATA, SCALE, RATIO)
 %	CI is a two-element vector containing the lower and upper bounds of
 %	the 95% confidence interval for the S estimate (based on SE).
 %
-%   (c) Jeffrey M Girard, 2015
+%	(c) Jeffrey M Girard, 2015
 %   
-%   Reference: Gwet, K. L. (2014). Handbook of inter-rater reliability:
-%   The definitive guide to measuring the extent of agreement among raters
-%   (4th ed.). Gaithersburg, MD: Advanced Analytics.
+%	Reference: Gwet, K. L. (2014). Handbook of inter-rater reliability:
+%	The definitive guide to measuring the extent of agreement among raters
+%	(4th ed.). Gaithersburg, MD: Advanced Analytics.
 
 %% Calculate variables
 if nargin < 3, RATIO = 0; end
