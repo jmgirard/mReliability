@@ -17,23 +17,38 @@ function [S] = FAST_S(CODES)
 %   The Public Opinion Quarterly, 18(3), 303–308.
 
 %% Check for binary coding from two coders
-if size(CODES,2) ~= 2
-    error('FAST_S can only handle two columns.');
+n = size(CODES,1);
+fprintf('Number of items = %d\n',n);
+if n < 1
+    S = NaN;
+    fprintf('S = NaN; At least 1 item is required.\n')
+    return;
+end
+j = size(CODES,2);
+fprintf('Number of coders = %d\n',j);
+if j ~= 2
+    S = NaN;
+    fprintf('S = NaN; Use FULL_S() for more than 2 coders.\n');
+    return;
 end
 v = unique(CODES);
-if length(v) ~= 2
-    error('FAST_S can only handle two categories.');
+q = length(v);
+fprintf('Number of values = %d\n',q);
+fprintf('Values = %s\n',mat2str(v));
+if q ~= 2
+    S = NaN;
+    fprintf('S = NaN; Use FULL_S() for more than 2 values.\n');
+    return;
 end
-%% Calculate contingency table cells
-a = sum(CODES(:,1)==v(1) & CODES(:,2)==v(1));
-b = sum(CODES(:,1)==v(2) & CODES(:,2)==v(1));
-c = sum(CODES(:,1)==v(1) & CODES(:,2)==v(2));
-d = sum(CODES(:,1)==v(2) & CODES(:,2)==v(2));
+%% Calculate agreements and disagreements
+A = sum(CODES(:,1)==CODES(:,2));
+D = sum(CODES(:,1)==CODES(:,2));
+fprintf('Number of agreements = %d\nNumber of disagreements = %d\n',A,D);
 %% Calculate observed and chance agreement
-p_o = (a + d) / (a + b + c + d);
-p_c = 1 / 2;
+p_o = A / (A + D);
+p_c = 1 / q;
+fprintf('Percent observed agreement = %.3f\nPercent chance agreement = %.3f\n',p_o,p_c);
 %% Calculate reliability index
 S = (p_o - p_c) / (1 - p_c);
-
+fprintf('S index = %.3f\n',S);
 end
-
