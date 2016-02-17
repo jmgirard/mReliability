@@ -32,6 +32,7 @@ function [S] = FAST_S(CODES, Q)
 %   Zhao, X., Liu, J. S., & Deng, K. (2012).
 %   Assumptions behind inter-coder reliability indices.
 %   In C. T. Salmon (Ed.), Communication Yearbook (pp. 418–480). Routledge.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with any missing codes
 CODES(any(~isfinite(CODES),2),:) = [];
