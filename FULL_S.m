@@ -1,6 +1,6 @@
 function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 % Calculate the generalized form of the S index and its properties
-%	[S, P_O, P_E, SE, CI] = FULL_S(DATA, Q, SCALE, RATIO)
+%   [S, P_O, P_E, SE, CI] = FULL_S(DATA, Q, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -50,8 +50,8 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   The Public Opinion Quarterly, 18(3), 303–308.
 %
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability:
-%	The definitive guide to measuring the extent of agreement among raters
-%	(4th ed.). Gaithersburg, MD: Advanced Analytics.
+%   The definitive guide to measuring the extent of agreement among raters
+%   (4th ed.). Gaithersburg, MD: Advanced Analytics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with all missing codes
