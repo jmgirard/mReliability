@@ -30,18 +30,18 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
 %   *The actual lower bound is determined by the number of possible values.
 %
-%	P_O is the percent agreement observed between coders.
+%	P_O is the percent observed agreement (from 0.000 to 1.000).
 %
-%	P_C is the percent agreement expected to be due to chance. 
+%	P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %   
 %	SE is the standard error of the S estimate conditional on rater sample.
 %
 %	CI is a two-element vector containing the lower and upper bounds of
-%	the 95% confidence interval for the S estimate (based on SE).
+%	the 95% confidence interval for the S estimate (based on the SE).
 %
 %   Example usage: [S, P_O, P_C, SE, CI] = FULL_S(smiledata,2,'nominal',0);
 %   
-%	(c) Jeffrey M Girard, 2015
+%	(c) Jeffrey M Girard, 2016
 %   
 %	References:
 %
@@ -53,6 +53,15 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %	The definitive guide to measuring the extent of agreement among raters
 %	(4th ed.). Gaithersburg, MD: Advanced Analytics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Calculate basic descriptives
+[n,j] = size(CODES);
+v = unique(CODES);
+if nargin < 2
+    q = length(v);
+else
+    q = Q;
+end
 
 %% Calculate variables
 if nargin < 3, RATIO = 0; end

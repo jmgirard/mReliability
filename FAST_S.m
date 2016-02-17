@@ -32,7 +32,9 @@ function [S] = FAST_S(CODES, Q)
 %   Assumptions behind inter-coder reliability indices.
 %   In C. T. Salmon (Ed.), Communication Yearbook (pp. 418–480). Routledge.
 
-%% Get basic descriptives
+%% Remove items with missing codes
+CODES(any(~isfinite(CODES),2),:) = [];
+%% Calculate basic descriptives
 n = size(CODES,1);
 j = size(CODES,2);
 v = unique(CODES);
