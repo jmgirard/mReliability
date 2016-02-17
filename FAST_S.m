@@ -18,6 +18,8 @@ function [S] = FAST_S(CODES, Q)
 %   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
 %   *The actual lower bound is determined by the number of possible values.
 %   
+%   Example usage: S = FAST_S(smiledata,2);
+%   
 %   (c) Jeffrey M Girard, 2016
 %
 %   References:
@@ -67,4 +69,5 @@ fprintf('Number of disagreements = %d\n',dis);
 fprintf('Percent observed agreement = %.3f\n',p_o);
 fprintf('Percent chance agreement = %.3f\n',p_c);
 fprintf('S index = %.3f\n',S);
+
 end

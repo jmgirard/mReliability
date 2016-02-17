@@ -39,6 +39,8 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %	CI is a two-element vector containing the lower and upper bounds of
 %	the 95% confidence interval for the S estimate (based on SE).
 %
+%   Example usage: [S, P_O, P_C, SE, CI] = FULL_S(smiledata,2,'nominal',0);
+%   
 %	(c) Jeffrey M Girard, 2015
 %   
 %	References:
@@ -50,6 +52,7 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability:
 %	The definitive guide to measuring the extent of agreement among raters
 %	(4th ed.). Gaithersburg, MD: Advanced Analytics.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Calculate variables
 if nargin < 3, RATIO = 0; end
