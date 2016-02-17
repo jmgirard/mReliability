@@ -1,22 +1,22 @@
-function [S] = FAST_S(CODES,Q)
-% Quickly calculate the S index using data from exactly two coders
-%   [S] = FAST_S(CODES,Q)
+function [S] = FAST_S(CODES, Q)
+% Quickly calculate the S index using nominal data from exactly two coders
+%   [S] = FAST_S(CODES, Q)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., coder).
-%   This function requires exactly two coders (the function FULL_S can
-%   handle any number of coders). Codes can take on any number of values.
+%   This function requires nominal coding from exactly two coders (the
+%   FULL_S function can handle any number of coders and different scales).
 %
 %   Q is an optional parameter that can be used to specify the number of
 %   possible values. If this variable is not specified, then the number
 %   of possible values is inferred from the CODES matrix. This inference 
 %   can underestimate S if all possible values aren't included in CODES.
 %
-%   S is a chance-corrected index of agreement. It assumes that each
+%   S is a chance-adjusted index of agreement. It assumes that each
 %   category has an equal chance of being selected at random. It ranges
-%   from -1.0 to 1.0 where 0.0 means coders were no better than chance.
-%   Note that the lower bound is determined by the number of values.
+%   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
+%   *The actual lower bound is determined by the number of possible values.
 %   
 %   (c) Jeffrey M Girard, 2016
 %
