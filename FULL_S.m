@@ -7,16 +7,16 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function can handle any number of coders and values.
 %
-%   Q is an optional parameter that can be used to specify the number of
-%   possible values. If this variable is not specified, then the number
-%   of possible values is inferred from the CODES matrix. This inference 
-%   can underestimate S if all possible values aren't included in CODES.
+%   Q is an optional parameter specifying the number of possible values. If
+%   this variable is not specified, then the number of possible values is
+%   inferred from the CODES matrix. This inference can underestimate S if
+%   all possible values aren't included in CODES.
 %
-%	SCALE is a string corresponding to the weighting scheme to use:
-%	-Use 'nominal' weights for unordered categories (default)
-%	-Use 'ordinal' weights for ordered categories of unequal size
-%	-Use 'interval' weights for ordered categories with equal spacing
-%	-Use 'ratio' weights for ordered categories with a meaningful zero
+%	SCALE is an optional parameter specifying the scale of measurement:
+%	-Use 'nominal' for unordered categories (default)
+%	-Use 'ordinal' for ordered categories of unequal size
+%	-Use 'interval' for ordered categories with equal spacing
+%	-Use 'ratio' for ordered categories with equal spacing and a zero point
 %
 %	RATIO is an optional parameter that can be used to specify the sampling
 %   fraction for the current reliability experiment; it is used in the
@@ -54,23 +54,33 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %	(4th ed.). Gaithersburg, MD: Advanced Analytics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Remove items with all missing codes
+CODES(all(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
 [n,j] = size(CODES);
-v = unique(CODES);
+x = unique(CODES);
+x(~isfinite(x)) = [];
 if nargin < 2
-    q = length(v);
+    q = length(x);
+    SCALE = 'nominal';
+    RATIO = 0;
+elseif nargin < 3
+    q = Q;
+    SCALE = 'nominal';
+    RATIO = 0;
+elseif nargin < 4
+    q = Q;
+    RATIO = 0;
 else
     q = Q;
 end
-
-%% Calculate variables
-if nargin < 3, RATIO = 0; end
-CODES(all(~isfinite(CODES),2),:) = [];
-[n,~] = size(CODES);
-x = unique(CODES(:));
-x(~isfinite(x)) = [];
-q = length(x);
-
+%% Output basic descriptives
+fprintf('Number of items = %d\n',n);
+fprintf('Number of coders = %d\n',j);
+fprintf('Number of possible values = %d\n',q);
+fprintf('Observed values = %s\n',mat2str(x));
+fprintf('Scale of measurement = %s\n',SCALE);
+fprintf('Sampling fraction = %.3f\n',RATIO);
 %% Calculate weights
 w = nan(q,q);
 for k = 1:q
