@@ -108,65 +108,66 @@ for k = 1:q
                 w(k,l) = 1 - (((x(k) - x(l)) / (x(k) + x(l)))^2) / (((max(x) - min(x)) / (max(x) + min(x)))^2);
                 if x(k)==0 && x(l)==0, w(k,l) = 1; end
             otherwise
-                error('Type must be nominal, ordinal, interval, or ratio');
+                error('Scale must be nominal, ordinal, interval, or ratio');
         end
     end
 end
-
 %% Calculate percent agreement for each item and overall
-p_a_i = zeros(n,1);
+p_o_i = zeros(n,1);
 for i = 1:n
     r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
-        for k = 1:q
+        for k = 1:length(x)
             r_ik = sum(CODES(i,:)==x(k));
             rstar_ik = 0;
-            for l = 1:q
+            for l = 1:length(x)
                 w_kl = w(k,l);
                 r_il = sum(CODES(i,:)==x(l));
                 rstar_ik = rstar_ik + (w_kl * r_il);
             end
-            p_a_i(i) = p_a_i(i) + (r_ik * (rstar_ik - 1)) / (r_i * (r_i - 1));
+            p_o_i(i) = p_o_i(i) + (r_ik * (rstar_ik - 1)) / (r_i * (r_i - 1));
         end
     end
 end
-P_O = sum(p_a_i) / sum(sum(isfinite(CODES),2)>=2);
-
+P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2)>=2);
 %% Calculate percent chance agreement for each item and overall
-p_e_i = zeros(n,1);
+p_c_i = zeros(n,1);
 for i = 1:n
     T_w = sum(sum(w));
-    p_e_i(i) = T_w / (q ^ 2);
+    p_c_i(i) = T_w / (q ^ 2);
 end
-P_C = mean(p_e_i);
-
-%% Calculate K point estimate
+P_C = mean(p_c_i);
+%% Calculate S point estimate
 S = (P_O - P_C) / (1 - P_C);
-
-%% Return if variance is not requested
+%% Output components and reliability
+fprintf('Percent observed agreement = %.3f\n',P_O);
+fprintf('Percent chance agreement = %.3f\n',P_C);
+fprintf('\nS index = %.3f\n',S);
+%% Return if SE and CI are not requested
 if nargout <=3
     SE = NaN;
     CI = [NaN,NaN];
     return;
 end
-
 %% Calculate variance of S point estimate
 S_i = nan(n,1);
 v_inner = 0;
 for i = 1:n
     r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
-        nprime = sum(~isnan(p_a_i));
-        S_i(i) = (n / nprime) * (p_a_i(i) - P_C) / (1 - P_C);
+        nprime = sum(~isnan(p_o_i));
+        S_i(i) = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
     else
         S_i(i) = 0;
     end
     v_inner = v_inner + (S_i(i) - S) ^ 2;
 end
 v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
-
-%% Calculate the standard error and confidence interval
+%% Calculate standard error and confidence interval
 SE = sqrt(v);
 CI = [S - 1.96 * SE, S + 1.96 * SE];
+%% Output standard error and confidence interval
+fprintf('Standard Error (SE) = %.3f\n',SE);
+fprintf('95%% Confidence Interval = %.3f to %.3f\n',CI(1),CI(2));
 
 end
