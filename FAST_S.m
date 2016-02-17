@@ -1,5 +1,5 @@
 function [S] = FAST_S(CODES, Q)
-% Quickly calculate the S index using nominal data from exactly two coders
+% Quickly calculate Bennett's S index for nominal coding from two coders
 %   [S] = FAST_S(CODES, Q)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
@@ -32,6 +32,7 @@ function [S] = FAST_S(CODES, Q)
 %   Zhao, X., Liu, J. S., & Deng, K. (2012).
 %   Assumptions behind inter-coder reliability indices.
 %   In C. T. Salmon (Ed.), Communication Yearbook (pp. 418–480). Routledge.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with any missing codes

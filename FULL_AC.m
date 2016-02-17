@@ -51,6 +51,7 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability: The definitive
 %   guide to measuring the extent of agreement among raters (4th ed.).
 %   Gaithersburg, MD: Advanced Analytics.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with all missing codes

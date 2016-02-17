@@ -1,5 +1,5 @@
 function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
-% Calculate the generalized form of the S index and its properties
+% Calculate the generalized form of Bennett's S index
 %   [S, P_O, P_E, SE, CI] = FULL_S(DATA, Q, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
@@ -52,6 +52,7 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability:
 %   The definitive guide to measuring the extent of agreement among raters
 %   (4th ed.). Gaithersburg, MD: Advanced Analytics.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with all missing codes

@@ -25,6 +25,7 @@ function [AC] = FAST_AC(CODES)
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability: The definitive
 %   guide to measuring the extent of agreement among raters (4th ed.).
 %   Gaithersburg, MD: Advanced Analytics.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with any missing codes
