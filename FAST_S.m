@@ -70,6 +70,6 @@ fprintf('Number of agreements = %d\n',agr);
 fprintf('Number of disagreements = %d\n',dis);
 fprintf('Percent observed agreement = %.3f\n',p_o);
 fprintf('Percent chance agreement = %.3f\n',p_c);
-fprintf('S index = %.3f\n',S);
+fprintf('\nS index = %.3f\n',S);
 
 end
