@@ -7,6 +7,7 @@ function [S] = FAST_S(CODES, Q)
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function requires nominal coding from exactly two coders (the
 %   FULL_S function can handle any number of coders and different scales).
+%   Items with any missing codes (e.g., NaN) will be dropped from analysis.
 %
 %   Q is an optional parameter that can be used to specify the number of
 %   possible values. If this variable is not specified, then the number
@@ -32,7 +33,7 @@ function [S] = FAST_S(CODES, Q)
 %   Assumptions behind inter-coder reliability indices.
 %   In C. T. Salmon (Ed.), Communication Yearbook (pp. 418–480). Routledge.
 
-%% Remove items with missing codes
+%% Remove items with any missing codes
 CODES(any(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
 [n,j] = size(CODES);
