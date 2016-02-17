@@ -139,16 +139,6 @@ end
 P_C = mean(p_c_i);
 %% Calculate S point estimate
 S = (P_O - P_C) / (1 - P_C);
-%% Output components and reliability
-fprintf('Percent observed agreement = %.3f\n',P_O);
-fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nS index = %.3f\n',S);
-%% Return if SE and CI are not requested
-if nargout <=3
-    SE = NaN;
-    CI = [NaN,NaN];
-    return;
-end
 %% Calculate variance of S point estimate
 S_i = nan(n,1);
 v_inner = 0;
@@ -166,7 +156,10 @@ v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
 %% Calculate standard error and confidence interval
 SE = sqrt(v);
 CI = [S - 1.96 * SE, S + 1.96 * SE];
-%% Output standard error and confidence interval
+%% Output reliability and variance components
+fprintf('Percent observed agreement = %.3f\n',P_O);
+fprintf('Percent chance agreement = %.3f\n',P_C);
+fprintf('\nS index = %.3f\n',S);
 fprintf('Standard Error (SE) = %.3f\n',SE);
 fprintf('95%% Confidence Interval = %.3f to %.3f\n',CI(1),CI(2));
 
