@@ -37,17 +37,17 @@ function [S] = FAST_S(CODES, Q)
 CODES(any(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
 [n,j] = size(CODES);
-v = unique(CODES);
+x = unique(CODES);
 if nargin < 2
-    q = length(v);
+    q = length(x);
 else
     q = Q;
 end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of values = %d\n',q);
-fprintf('Observed values = %s\n',mat2str(v));
+fprintf('Number of possible values = %d\n',q);
+fprintf('Observed values = %s\n',mat2str(x));
 %% Check for binary coding from two observers
 if n < 1
     S = NaN;
