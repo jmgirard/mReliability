@@ -12,13 +12,13 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   inferred from the CODES matrix. This inference can underestimate S if
 %   all possible values aren't included in CODES.
 %
-%	SCALE is an optional parameter specifying the scale of measurement:
-%	-Use 'nominal' for unordered categories (default)
-%	-Use 'ordinal' for ordered categories of unequal size
-%	-Use 'interval' for ordered categories with equal spacing
-%	-Use 'ratio' for ordered categories with equal spacing and a zero point
+%   SCALE is an optional parameter specifying the scale of measurement:
+%   -Use 'nominal' for unordered categories (default)
+%   -Use 'ordinal' for ordered categories of unequal size
+%   -Use 'interval' for ordered categories with equal spacing
+%   -Use 'ratio' for ordered categories with equal spacing and a zero point
 %
-%	RATIO is an optional parameter that can be used to specify the sampling
+%   RATIO is an optional parameter that can be used to specify the sampling
 %   fraction for the current reliability experiment; it is used in the
 %   calculation of SE and CI. To generalize from a sample of n items (this
 %   is the number of items in CODES) to a population of N items (this is
@@ -30,20 +30,20 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
 %   *The actual lower bound is determined by the number of possible values.
 %
-%	P_O is the percent observed agreement (from 0.000 to 1.000).
+%   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
-%	P_C is the estimated percent chance agreement (from 0.000 to 1.000).
+%   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %   
-%	SE is the standard error of the S estimate conditional on rater sample.
+%   SE is the standard error of the S estimate conditional on rater sample.
 %
-%	CI is a two-element vector containing the lower and upper bounds of
-%	the 95% confidence interval for the S estimate (based on the SE).
+%   CI is a two-element vector containing the lower and upper bounds of
+%   the 95% confidence interval for the S estimate (based on the SE).
 %
 %   Example usage: [S, P_O, P_C, SE, CI] = FULL_S(smiledata,2,'nominal',0);
 %   
-%	(c) Jeffrey M Girard, 2016
+%   (c) Jeffrey M Girard, 2016
 %   
-%	References:
+%   References:
 %
 %   Bennett, E. M., Alpert, R., & Goldstein, A. C. (1954).
 %   Communication through limited response questioning.
