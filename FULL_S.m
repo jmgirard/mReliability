@@ -81,6 +81,17 @@ fprintf('Number of possible values = %d\n',q);
 fprintf('Observed values = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
+%% Check for valid data from more than one coder
+if n < 1
+    S = NaN;
+    fprintf('S = NaN; At least 1 item is required.\n')
+    return;
+end
+if j < 2
+    S = NaN;
+    fprintf('S = NaN; At least 2 coders are required.\n');
+    return;
+end
 %% Calculate weights
 w = nan(q,q);
 for k = 1:q

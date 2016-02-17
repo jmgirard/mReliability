@@ -48,7 +48,7 @@ fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
 fprintf('Number of possible values = %d\n',q);
 fprintf('Observed values = %s\n',mat2str(x));
-%% Check for binary coding from two observers
+%% Check for valid data from two coders
 if n < 1
     S = NaN;
     fprintf('S = NaN; At least 1 item is required.\n')
