@@ -1,46 +1,61 @@
-function [S, P_A, P_E, SE, CI] = FULL_S(DATA, SCALE, RATIO)
+function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 % Calculate the generalized form of the S index and its properties
-%	[S, P_A, P_E, SE, CI] = FULL_S(DATA, TYPE, RATIO)
+%	[S, P_O, P_E, SE, CI] = FULL_S(DATA, Q, SCALE, RATIO)
 %
-%	DATA is a numerical matrix of codes with missing data indicated by NaN.
-%	Each row is a single item and each column is a single coder. Any number
-%	of coders and categories can be used. Codes should be made numerical
-%	(e.g., LOW=>1, MEDIUM=>2, HIGH=>3; APPLE=>1, ORANGE=>2, BANANA=>3).
+%   CODES should be a numerical matrix where each row corresponds to a
+%   single item of measurement (e.g., participant or question) and each
+%   column corresponds to a single source of measurement (i.e., coder).
+%   This function can handle any number of coders and values.
 %
-%	SCALE is a string corresponding to the type of weights to be used.
-%	'nominal' weights are used for unordered categories
-%	'ordinal' weights are used for ordered categories of unequal size
-%	'interval' weights are used for ordered categories with equal spacing
-%	'ratio' weights are used for ordered categories with a meaningful zero
+%   Q is an optional parameter that can be used to specify the number of
+%   possible values. If this variable is not specified, then the number
+%   of possible values is inferred from the CODES matrix. This inference 
+%   can underestimate S if all possible values aren't included in CODES.
 %
-%	RATIO is the sampling fraction for the current reliability experiment.
-%	To generalize from a sample of n items to a population of N items, set
-%	RATIO to the fraction of n to N (i.e., n/N). If the population size is
-%	unknown, then use the default of 0. This parameter is optional.
+%	SCALE is a string corresponding to the weighting scheme to use:
+%	-Use 'nominal' weights for unordered categories (default)
+%	-Use 'ordinal' weights for ordered categories of unequal size
+%	-Use 'interval' weights for ordered categories with equal spacing
+%	-Use 'ratio' weights for ordered categories with a meaningful zero
 %
-%	S is a chance-corrected agreement index that estimates chance
-%	agreement using a category-based approach.
+%	RATIO is an optional parameter that can be used to specify the sampling
+%   fraction for the current reliability experiment; it is used in the
+%   calculation of SE and CI. To generalize from a sample of n items (this
+%   is the number of items in CODES) to a population of N items (this is
+%   the number of items in your entire dataset), set RATIO to the fraction
+%   of n to N (i.e., n/N). The default of 0 can be used when N is unknown.
 %
-%	P_A is the percent agreement observed between coders.
+%   S is a chance-corrected index of agreement. It assumes that each
+%   category has an equal chance of being selected at random. It ranges
+%   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
+%   *The actual lower bound is determined by the number of possible values.
 %
-%	P_E is the percent agreement expected to be due to chance. 
+%	P_O is the percent agreement observed between coders.
+%
+%	P_C is the percent agreement expected to be due to chance. 
 %   
-%	SE is the standard error of the estimate (conditional on rater sample).
+%	SE is the standard error of the S estimate conditional on rater sample.
 %
 %	CI is a two-element vector containing the lower and upper bounds of
 %	the 95% confidence interval for the S estimate (based on SE).
 %
 %	(c) Jeffrey M Girard, 2015
 %   
-%	Reference: Gwet, K. L. (2014). Handbook of inter-rater reliability:
+%	References:
+%
+%   Bennett, E. M., Alpert, R., & Goldstein, A. C. (1954).
+%   Communication through limited response questioning.
+%   The Public Opinion Quarterly, 18(3), 303–308.
+%
+%   Gwet, K. L. (2014). Handbook of inter-rater reliability:
 %	The definitive guide to measuring the extent of agreement among raters
 %	(4th ed.). Gaithersburg, MD: Advanced Analytics.
 
 %% Calculate variables
 if nargin < 3, RATIO = 0; end
-DATA(all(~isfinite(DATA),2),:) = [];
-[n,~] = size(DATA);
-x = unique(DATA(:));
+CODES(all(~isfinite(CODES),2),:) = [];
+[n,~] = size(CODES);
+x = unique(CODES(:));
 x(~isfinite(x)) = [];
 q = length(x);
 
@@ -79,21 +94,21 @@ end
 %% Calculate percent agreement for each item and overall
 p_a_i = zeros(n,1);
 for i = 1:n
-    r_i = sum(isfinite(DATA(i,:)));
+    r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
         for k = 1:q
-            r_ik = sum(DATA(i,:)==x(k));
+            r_ik = sum(CODES(i,:)==x(k));
             rstar_ik = 0;
             for l = 1:q
                 w_kl = w(k,l);
-                r_il = sum(DATA(i,:)==x(l));
+                r_il = sum(CODES(i,:)==x(l));
                 rstar_ik = rstar_ik + (w_kl * r_il);
             end
             p_a_i(i) = p_a_i(i) + (r_ik * (rstar_ik - 1)) / (r_i * (r_i - 1));
         end
     end
 end
-P_A = sum(p_a_i) / sum(sum(isfinite(DATA),2)>=2);
+P_O = sum(p_a_i) / sum(sum(isfinite(CODES),2)>=2);
 
 %% Calculate percent chance agreement for each item and overall
 p_e_i = zeros(n,1);
@@ -101,10 +116,10 @@ for i = 1:n
     T_w = sum(sum(w));
     p_e_i(i) = T_w / (q ^ 2);
 end
-P_E = mean(p_e_i);
+P_C = mean(p_e_i);
 
 %% Calculate K point estimate
-S = (P_A - P_E) / (1 - P_E);
+S = (P_O - P_C) / (1 - P_C);
 
 %% Return if variance is not requested
 if nargout <=3
@@ -117,10 +132,10 @@ end
 S_i = nan(n,1);
 v_inner = 0;
 for i = 1:n
-    r_i = sum(isfinite(DATA(i,:)));
+    r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
         nprime = sum(~isnan(p_a_i));
-        S_i(i) = (n / nprime) * (p_a_i(i) - P_E) / (1 - P_E);
+        S_i(i) = (n / nprime) * (p_a_i(i) - P_C) / (1 - P_C);
     else
         S_i(i) = 0;
     end
