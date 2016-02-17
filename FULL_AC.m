@@ -7,10 +7,10 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function can handle any number of coders and values.
 %
-%   Q is an optional parameter specifying the number of possible values. If
-%   this variable is not specified, then the number of possible values is
-%   inferred from the CODES matrix. This inference can underestimate S if
-%   all possible values aren't included in CODES.
+%   Q is an optional parameter specifying the number of total categories.
+%   If this variable is not specified, then the number of categories is
+%   inferred from the CODES matrix. This inference can underestimate AC if
+%   all possible categories aren't included in CODES.
 %
 %   SCALE is an optional parameter specifying the scale of measurement:
 %   -Use 'nominal' for unordered categories (default)
@@ -27,17 +27,16 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
 %
 %   AC is a chance-adjusted index of agreement. When the nominal scale is
 %   selected, Gwet calls it AC1; with other scales it is called AC2. AC
-%   ranges from -1* to 1 where 0 means coders were no better than chance.
-%   *The actual lower bound is determined by the number of possible values.
+%   ranges from -1 to 1 where 0 means coders were no better than chance.
 %
 %   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
 %   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %   
-%   SE is the standard error of the S estimate conditional on rater sample.
+%   SE is the standard error, conditional on rater sample.
 %
 %   CI is a two-element vector containing the lower and upper bounds of
-%   the 95% confidence interval for the S estimate (based on the SE).
+%   the 95% confidence interval for the AC estimate (based on the SE).
 %
 %   Example usage: [AC,P_O,P_C,SE,CI] = FULL_AC(smiledata,2,'nominal',0);
 %
@@ -77,19 +76,19 @@ end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of possible values = %d\n',q);
-fprintf('Observed values = %s\n',mat2str(x));
+fprintf('Number of possible categories = %d\n',q);
+fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
 %% Check for valid data from two coders
 if n < 1
     AC = NaN;
-    fprintf('S = NaN; At least 1 item is required.\n')
+    fprintf('\nERROR: At least 1 item is required.\n')
     return;
 end
 if j < 2
     AC = NaN;
-    fprintf('S = NaN; At least 2 coders are required.\n');
+    fprintf('\nERROR: At least 2 coders are required.\n');
     return;
 end
 %% Calculate weights

@@ -9,15 +9,15 @@ function [S] = FAST_S(CODES, Q)
 %   FULL_S function can handle any number of coders and different scales).
 %   Items with any missing codes (e.g., NaN) will be dropped from analysis.
 %
-%   Q is an optional parameter that can be used to specify the number of
-%   possible values. If this variable is not specified, then the number
-%   of possible values is inferred from the CODES matrix. This inference 
-%   can underestimate S if all possible values aren't included in CODES.
+%   Q is an optional parameter specifying the total number of categories.
+%   If this variable is not specified, then the number of categories is
+%   inferred from the CODES matrix. This inference can underestimate S if
+%   all possible categories aren't included in CODES.
 %
 %   S is a chance-adjusted index of agreement. It assumes that each
 %   category has an equal chance of being selected at random. It ranges
 %   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
-%   *The actual lower bound is determined by the number of possible values.
+%   *The actual lower bound is determined by the number of categories.
 %   
 %   Example usage: S = FAST_S(smiledata,2);
 %   
@@ -47,17 +47,17 @@ end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of possible values = %d\n',q);
-fprintf('Observed values = %s\n',mat2str(x));
+fprintf('Number of possible categories = %d\n',q);
+fprintf('Observed categories = %s\n',mat2str(x));
 %% Check for valid data from two coders
 if n < 1
     S = NaN;
-    fprintf('S = NaN; At least 1 item is required.\n')
+    fprintf('ERROR: At least 1 item is required.\n')
     return;
 end
 if j ~= 2
     S = NaN;
-    fprintf('S = NaN; Use FULL_S() for more than 2 coders.\n');
+    fprintf('ERROR: Use FULL_S() for more than 2 coders.\n');
     return;
 end
 %% Calculate components and reliability

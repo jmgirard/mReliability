@@ -31,22 +31,22 @@ x = unique(CODES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of total categories = %d\n',2);
+fprintf('Number of possible categories = %d\n',2);
 fprintf('Observed categories = %s\n',mat2str(x));
 %% Check for valid dichotomous data from two coders
 if n < 1
     PI = NaN;
-    fprintf('Scott''s Pi = NaN; At least 1 item is required.\n')
+    fprintf('ERROR: At least 1 item is required.\n')
     return;
 end
 if j ~= 2
     PI = NaN;
-    fprintf('Scott''s Pi = NaN; Use FULL_PI for more than 2 coders.\n');
+    fprintf('ERROR: Use FULL_PI for more than 2 coders.\n');
     return;
 end
 if length(x) ~= 2
     PI = NaN;
-    fprintf('Scott''s Pi = NaN; Use FULL_PI for more than 2 categories.\n');
+    fprintf('ERROR: Use FULL_PI for more than 2 categories.\n');
     return;
 end
 %% Calculate contingency table and derivatives

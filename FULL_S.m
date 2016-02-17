@@ -7,10 +7,10 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function can handle any number of coders and values.
 %
-%   Q is an optional parameter specifying the number of possible values. If
-%   this variable is not specified, then the number of possible values is
+%   Q is an optional parameter specifying the total number of categories.
+%   If this variable is not specified, then the number of categories is
 %   inferred from the CODES matrix. This inference can underestimate S if
-%   all possible values aren't included in CODES.
+%   all possible categories aren't included in CODES.
 %
 %   SCALE is an optional parameter specifying the scale of measurement:
 %   -Use 'nominal' for unordered categories (default)
@@ -28,13 +28,13 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   S is a chance-corrected index of agreement. It assumes that each
 %   category has an equal chance of being selected at random. It ranges
 %   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
-%   *The actual lower bound is determined by the number of possible values.
+%   *The actual lower bound is determined by the number of categories.
 %
 %   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
 %   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %   
-%   SE is the standard error of the S estimate conditional on rater sample.
+%   SE is the standard error, conditional on rater sample.
 %
 %   CI is a two-element vector containing the lower and upper bounds of
 %   the 95% confidence interval for the S estimate (based on the SE).
@@ -77,8 +77,8 @@ end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of possible values = %d\n',q);
-fprintf('Observed values = %s\n',mat2str(x));
+fprintf('Number of possible categories = %d\n',q);
+fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
 %% Check for valid data from more than one coder
