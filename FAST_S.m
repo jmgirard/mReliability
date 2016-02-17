@@ -35,8 +35,7 @@ function [S] = FAST_S(CODES, Q)
 %% Remove items with missing codes
 CODES(any(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
-n = size(CODES,1);
-j = size(CODES,2);
+[n,j] = size(CODES);
 v = unique(CODES);
 if nargin < 2
     q = length(v);
