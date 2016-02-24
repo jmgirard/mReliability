@@ -1,6 +1,6 @@
-function [AC] = FAST_AC(CODES)
-% Quickly calculate Gwet's AC1 for dichotomous coding from two coders
-%   [AC] = FAST_AC(CODES)
+function [GAMMA] = FAST_GAMMA(CODES)
+% Calculate Gwet's gamma coefficient using simplified formulas
+%   [GAMMA] = FAST_AC(CODES)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -8,11 +8,9 @@ function [AC] = FAST_AC(CODES)
 %   This function can only handle two coders and two categories (use the
 %   FULL_AC function for more than two coders and many categories).
 %
-%   AC is a chance-adjusted index of agreement. In the dichotomous case, it
-%   estimates chance agreement using a distribution-based approach. AC
-%   ranges from -1 to 1 where 0 means coders were no better than chance.
+%   GAMMA is a chance-adjusted index of agreement.
 %
-%   Example usage: [AC] = FAST_AC(smiledata);
+%   Example usage: [GAMMA] = FAST_GAMMA(smiledata);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
@@ -40,18 +38,18 @@ fprintf('Number of possible categories = %d\n',2);
 fprintf('Observed categories = %s\n',mat2str(x));
 %% Check for valid dichotomous data from two coders
 if n < 1
-    AC = NaN;
+    GAMMA = NaN;
     fprintf('ERROR: At least 1 item is required.\n')
     return;
 end
 if j ~= 2
-    AC = NaN;
-    fprintf('ERROR: Use FULL_AC for more than 2 coders.\n');
+    GAMMA = NaN;
+    fprintf('ERROR: Use FULL_GAMMA for more than 2 coders.\n');
     return;
 end
 if length(x) ~= 2
-    AC = NaN;
-    fprintf('ERROR: Use FULL_AC for more than 2 categories.\n');
+    GAMMA = NaN;
+    fprintf('ERROR: Use FULL_GAMMA for more than 2 categories.\n');
     return;
 end
 %% Calculate contingency table cells and marginals
@@ -64,10 +62,10 @@ m2 = (b + c + 2*d) / 2;
 %% Calculate reliability and components
 P_O = (a + d) / n;
 P_C = (m1 / n) * (m2 / n) + (m1 / n) * (m2 / n);
-AC = (P_O - P_C) / (1 - P_C);
+GAMMA = (P_O - P_C) / (1 - P_C);
 %% Output reliability and variance components
 fprintf('Percent observed agreement = %.3f\n',P_O);
 fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nGwet''s AC = %.3f\n',AC);
+fprintf('\nGwet''s gamma coefficient = %.3f\n',GAMMA);
 
 end

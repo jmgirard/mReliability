@@ -1,6 +1,6 @@
-function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
-% Calculate the generalized form of Gwet's Agreement Coefficient (AC1/AC2)
-%   [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
+function [GAMMA, P_O, P_C, SE, CI] = FULL_GAMMA(CODES, CATEGORIES, SCALE, RATIO)
+% Calculate Gwet's gamma coefficient using generalized formulas
+%   [GAMMA, P_O, P_C, SE, CI] = FULL_GAMMA(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -38,7 +38,7 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
 %   CI is a two-element vector containing the lower and upper bounds of
 %   the 95% confidence interval for the AC estimate (based on the SE).
 %
-%   Example usage: [AC,P_O,P_C,SE,CI] = FULL_AC(smiledata,[0,1],'nominal',0);
+%   Example usage: [GAMMA,P_O,P_C,SE,CI] = FULL_GAMMA(smiledata,[0,1],'nominal',0);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
@@ -84,12 +84,12 @@ fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
 %% Check for valid data from two coders
 if n < 1
-    AC = NaN;
+    GAMMA = NaN;
     fprintf('\nERROR: At least 1 item is required.\n')
     return;
 end
 if j < 2
-    AC = NaN;
+    GAMMA = NaN;
     fprintf('\nERROR: At least 2 coders are required.\n');
     return;
 end
@@ -169,7 +169,7 @@ for i = 1:n
 end
 P_C = mean(p_c_i);
 %% Calculate AC point estimate
-AC = (P_O - P_C) / (1 - P_C);
+GAMMA = (P_O - P_C) / (1 - P_C);
 %% Calculate the variance of the AC point estimate
 v_inner = nan(n,1);
 for i = 1:n
@@ -179,17 +179,17 @@ for i = 1:n
     else
         gamma_i = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
     end
-    gammastar_i = gamma_i - 2 * (1 - AC) * ((p_c_i(i) - P_C) / (1 - P_C));
-    v_inner(i) = (gammastar_i - AC) ^ 2;
+    gammastar_i = gamma_i - 2 * (1 - GAMMA) * ((p_c_i(i) - P_C) / (1 - P_C));
+    v_inner(i) = (gammastar_i - GAMMA) ^ 2;
 end
 v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
 %% Calculate the standard error and confidence interval
 SE = sqrt(v);
-CI = [AC - 1.96 * SE, AC + 1.96 * SE];
+CI = [GAMMA - 1.96 * SE, GAMMA + 1.96 * SE];
 %% Output reliability and variance components
 fprintf('Percent observed agreement = %.3f\n',P_O);
 fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nGwet''s AC = %.3f\n',AC);
+fprintf('\nGwet''s gamma coefficient = %.3f\n',GAMMA);
 fprintf('Standard Error (SE) = %.3f\n',SE);
 fprintf('95%% Confidence Interval = %.3f to %.3f\n',CI(1),CI(2));
 
