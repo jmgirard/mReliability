@@ -41,10 +41,13 @@ function [PI, P_O, P_C, SE, CI] = FULL_PI(CODES, CATEGORIES, SCALE, RATIO)
 %   (c) Jeffrey M Girard, 2016
 %   
 %   References:
-%
+%   
 %   Scott, W. A. (1955). Reliability of content analysis: The case of
 %   nominal scaling. Public Opinion Quarterly, 19(3), 321–325.
-%
+%   
+%   Fleiss, J. L. (1971). Measuring nominal scale agreement among many
+%   raters. Psychological Bulletin, 76(5), 378–382.
+%   
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability: The definitive
 %   guide to measuring the extent of agreement among raters (4th ed.).
 %   Gaithersburg, MD: Advanced Analytics.

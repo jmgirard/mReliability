@@ -1,16 +1,16 @@
-function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
+function [S, P_O, P_C, SE, CI] = FULL_S(CODES, CATEGORIES, SCALE, RATIO)
 % Calculate the generalized form of Bennett's S index
-%   [S, P_O, P_E, SE, CI] = FULL_S(DATA, Q, SCALE, RATIO)
+%   [S, P_O, P_E, SE, CI] = FULL_S(DATA, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function can handle any number of coders and values.
 %
-%   Q is an optional parameter specifying the total number of categories.
-%   If this variable is not specified, then the number of categories is
-%   inferred from the CODES matrix. This inference can underestimate S if
-%   all possible categories aren't included in CODES.
+%   CATEGORIES is an optional parameter specifying the possible categories
+%   as a numerical vector. If this variable is not specified, then the
+%   possible categories are inferred from the CODES matrix. This can
+%   underestimate reliability if all possible categories aren't used.
 %
 %   SCALE is an optional parameter specifying the scale of measurement:
 %   -Use 'nominal' for unordered categories (default)
@@ -39,7 +39,7 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 %   CI is a two-element vector containing the lower and upper bounds of
 %   the 95% confidence interval for the S estimate (based on the SE).
 %
-%   Example usage: [S, P_O, P_C, SE, CI] = FULL_S(smiledata,2,'nominal',0);
+%   Example usage: [S, P_O, P_C, SE, CI] = FULL_S(smiledata,[0,1],'nominal',0);
 %   
 %   (c) Jeffrey M Girard, 2016
 %   
@@ -59,21 +59,22 @@ function [S, P_O, P_C, SE, CI] = FULL_S(CODES, Q, SCALE, RATIO)
 CODES(all(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
 [n,j] = size(CODES);
+nprime = sum(sum(isfinite(CODES),2)>=2);
 x = unique(CODES);
 x(~isfinite(x)) = [];
+if isempty(CATEGORIES)
+    CATEGORIES = x;
+end
+CATEGORIES = sort(unique(CATEGORIES(:)));
+q = length(CATEGORIES);
 if nargin < 2
-    q = length(x);
     SCALE = 'nominal';
     RATIO = 0;
 elseif nargin < 3
-    q = Q;
     SCALE = 'nominal';
     RATIO = 0;
 elseif nargin < 4
-    q = Q;
     RATIO = 0;
-else
-    q = Q;
 end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
@@ -91,6 +92,10 @@ end
 if j < 2
     S = NaN;
     fprintf('S = NaN; At least 2 coders are required.\n');
+    return;
+end
+if any(ismember(x,CATEGORIES)==0)
+    fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
     return;
 end
 %% Calculate weights
@@ -157,7 +162,6 @@ v_inner = 0;
 for i = 1:n
     r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
-        nprime = sum(~isnan(p_o_i));
         S_i(i) = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
     else
         S_i(i) = 0;

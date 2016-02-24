@@ -1,16 +1,16 @@
-function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
+function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
 % Calculate the generalized form of Gwet's Agreement Coefficient (AC1/AC2)
-%   [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
+%   [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., coder).
 %   This function can handle any number of coders and values.
 %
-%   Q is an optional parameter specifying the number of total categories.
-%   If this variable is not specified, then the number of categories is
-%   inferred from the CODES matrix. This inference can underestimate AC if
-%   all possible categories aren't included in CODES.
+%   CATEGORIES is an optional parameter specifying the possible categories
+%   as a numerical vector. If this variable is not specified, then the
+%   possible categories are inferred from the CODES matrix. This can
+%   underestimate reliability if all possible categories aren't used.
 %
 %   SCALE is an optional parameter specifying the scale of measurement:
 %   -Use 'nominal' for unordered categories (default)
@@ -38,7 +38,7 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
 %   CI is a two-element vector containing the lower and upper bounds of
 %   the 95% confidence interval for the AC estimate (based on the SE).
 %
-%   Example usage: [AC,P_O,P_C,SE,CI] = FULL_AC(smiledata,2,'nominal',0);
+%   Example usage: [AC,P_O,P_C,SE,CI] = FULL_AC(smiledata,[0,1],'nominal',0);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
@@ -58,21 +58,22 @@ function [AC, P_O, P_C, SE, CI] = FULL_AC(CODES, Q, SCALE, RATIO)
 CODES(all(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
 [n,j] = size(CODES);
+nprime = sum(sum(isfinite(CODES),2)>=2);
 x = unique(CODES);
 x(~isfinite(x)) = [];
+if isempty(CATEGORIES)
+    CATEGORIES = x;
+end
+CATEGORIES = sort(unique(CATEGORIES(:)));
+q = length(CATEGORIES);
 if nargin < 2
-    q = length(x);
     SCALE = 'nominal';
     RATIO = 0;
 elseif nargin < 3
-    q = max([Q,length(x)]);
     SCALE = 'nominal';
     RATIO = 0;
 elseif nargin < 4
-    q = max([Q,length(x)]);
     RATIO = 0;
-else
-    q = max([Q,length(x)]);
 end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
@@ -90,6 +91,10 @@ end
 if j < 2
     AC = NaN;
     fprintf('\nERROR: At least 2 coders are required.\n');
+    return;
+end
+if any(ismember(x,CATEGORIES)==0)
+    fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
     return;
 end
 %% Calculate weights
@@ -150,7 +155,7 @@ for i = 1:n
         end
     end
 end
-P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2)>=2);
+P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2) >= 2);
 %% Calculate percent chance agreement for each item and overall
 p_c_i = zeros(n,1);
 for i = 1:n
@@ -168,7 +173,12 @@ AC = (P_O - P_C) / (1 - P_C);
 %% Calculate the variance of the AC point estimate
 v_inner = nan(n,1);
 for i = 1:n
-    gamma_i = (p_o_i(i) - P_C) / (1 - P_C);
+    r_i = sum(isfinite(CODES(i,:)));
+    if r_i < 2
+        gamma_i = 0;
+    else
+        gamma_i = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
+    end
     gammastar_i = gamma_i - 2 * (1 - AC) * ((p_c_i(i) - P_C) / (1 - P_C));
     v_inner(i) = (gammastar_i - AC) ^ 2;
 end
