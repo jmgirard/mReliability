@@ -78,7 +78,7 @@ end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
-fprintf('Number of possible categories = %d\n',q);
+fprintf('Possible categories = %s\n',mat2str(CATEGORIES));
 fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
