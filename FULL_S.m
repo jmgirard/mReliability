@@ -148,25 +148,21 @@ for i = 1:n
 end
 P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2)>=2);
 %% Calculate percent chance agreement for each item and overall
-p_c_i = zeros(n,1);
-for i = 1:n
-    T_w = sum(sum(w));
-    p_c_i(i) = T_w / (q ^ 2);
-end
-P_C = mean(p_c_i);
+p_c
+T_w = sum(sum(w));
+P_C = T_w / (q ^ 2);
 %% Calculate S point estimate
 S = (P_O - P_C) / (1 - P_C);
 %% Calculate variance of S point estimate
-S_i = nan(n,1);
 v_inner = 0;
 for i = 1:n
     r_i = sum(isfinite(CODES(i,:)));
     if r_i >= 2
-        S_i(i) = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
+        s_i = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
     else
-        S_i(i) = 0;
+        s_i = 0;
     end
-    v_inner = v_inner + (S_i(i) - S) ^ 2;
+    v_inner = v_inner + (s_i - S) ^ 2;
 end
 v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
 %% Calculate standard error and confidence interval
