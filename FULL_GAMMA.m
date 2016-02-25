@@ -155,7 +155,7 @@ for i = 1:n
         end
     end
 end
-P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2) >= 2);
+P_O = sum(p_o_i) / nprime;
 %% Calculate percent chance agreement for each item and overall
 p_c_i = zeros(n,1);
 for i = 1:n

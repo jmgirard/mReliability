@@ -1,6 +1,6 @@
-function [PI, P_O, P_C, SE, CI] = FULL_PI(CODES, CATEGORIES, SCALE, RATIO)
-% Calculate Scott's pi coefficient using generalized formulas
-%   [PI, P_O, P_C, SE, CI] = FULL_AC(CODES, CATEGORIES, SCALE, RATIO)
+function [ALPHA, P_O, P_C, SE, CI] = FULL_ALPHAK(CODES, CATEGORIES, SCALE, RATIO)
+% Calculate Krippendorff's alpha coefficient using generalized formulas
+%   [ALPHA, P_O, P_C, SE, CI] = FULL_ALPHAK(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -25,7 +25,7 @@ function [PI, P_O, P_C, SE, CI] = FULL_PI(CODES, CATEGORIES, SCALE, RATIO)
 %   the number of items in your entire dataset), set RATIO to the fraction
 %   of n to N (i.e., n/N). The default of 0 can be used when N is unknown.
 %
-%   PI is a chance-adjusted index of agreement.
+%   ALPHA is a chance-adjusted index of agreement.
 %
 %   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
@@ -36,18 +36,19 @@ function [PI, P_O, P_C, SE, CI] = FULL_PI(CODES, CATEGORIES, SCALE, RATIO)
 %   CI is a two-element vector containing the lower and upper bounds of
 %   the 95% confidence interval for the AC estimate (based on the SE).
 %
-%   Example usage: [PI,P_O,P_C,SE,CI] = FULL_PI(smiledata,[0,1],'nominal',0);
+%   Example usage: [ALPHA,P_O,P_C,SE,CI] = FULL_ALPHA(smiledata,[0,1],'nominal',0);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
 %   References:
 %   
-%   Scott, W. A. (1955). Reliability of content analysis: The case of
-%   nominal scaling. Public Opinion Quarterly, 19(3), 321–325.
+%   Krippendorff, K. (1970). Estimating the reliability, systematic error
+%   and random error of interval data. Educational and Psychological
+%   Measurement, 30(1), 61–70.
 %   
-%   Fleiss, J. L. (1971). Measuring nominal scale agreement among many
-%   raters. Psychological Bulletin, 76(5), 378–382.
-%   
+%   Krippendorff, K. (1980). Content analysis: An introduction to its
+%   methodology. Newbury Park, CA: Sage Publications.
+%
 %   Gwet, K. L. (2014). Handbook of inter-rater reliability: The definitive
 %   guide to measuring the extent of agreement among raters (4th ed.).
 %   Gaithersburg, MD: Advanced Analytics.
@@ -61,7 +62,9 @@ CODES(all(~isfinite(CODES),2),:) = [];
 nprime = sum(sum(isfinite(CODES),2)>=2);
 x = unique(CODES);
 x(~isfinite(x)) = [];
-if isempty(CATEGORIES)
+if exist(CATEGORIES,'var')==0
+    CATEGORIES = x;
+elseif isempty(CATEGORIES)
     CATEGORIES = x;
 end
 CATEGORIES = sort(unique(CATEGORIES(:)));
@@ -84,12 +87,12 @@ fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
 %% Check for valid data from multiple coders
 if n < 1
-    PI = NaN;
+    ALPHA = NaN;
     fprintf('\nERROR: At least 1 item is required.\n')
     return;
 end
 if j < 2
-    PI = NaN;
+    ALPHA = NaN;
     fprintf('\nERROR: At least 2 coders are required.\n');
     return;
 end
@@ -128,15 +131,25 @@ for k = 1:q
         end
     end
 end
+%% Calculate rbar
+r_i = nan(1,n);
+for i = 1:n
+    r_i(i) = sum(isfinite(CODES(i,:)));
+end
+rbar = nanmean(r_i);
 %% Calculate pi for each category
 pi_k = zeros(q,1);
 for k = 1:q
     for i = 1:n
         r_ik = sum(CODES(i,:)==CATEGORIES(k));
         r_i = sum(isfinite(CODES(i,:)));
-        pi_k(k) = pi_k(k) + r_ik / r_i;
+        if r_i < 2
+            continue;
+        else
+            pi_k(k) = pi_k(k) + r_ik / rbar;
+        end
     end
-    pi_k(k) = pi_k(k) / n;
+    pi_k(k) = pi_k(k) / nprime;
 end
 %% Calculate percent agreement for each item and overall
 p_o_i = zeros(n,1);
@@ -151,11 +164,20 @@ for i = 1:n
                 r_il = sum(CODES(i,:)==CATEGORIES(l));
                 rstar_ik = rstar_ik + (w_kl * r_il);
             end
-            p_o_i(i) = p_o_i(i) + (r_ik * (rstar_ik - 1)) / (r_i * (r_i - 1));
+            p_o_i(i) = p_o_i(i) + (r_ik * (rstar_ik - 1)) / (rbar * (r_i - 1));
         end
     end
 end
-P_O = sum(p_o_i) / nprime;
+p_o = sum(p_o_i) / nprime;
+%% Adjust percent observed agreement sample size for each item and overall
+epsilon_n = 1 / (nprime * rbar);
+p_oEn_i = zeros(n,1);
+for i = 1:n
+    r_i = sum(isfinite(CODES(i,:)));
+    if r_i >= 2
+        p_oEn_i(i) = (1 - epsilon_n) * (p_o_i(i) - p_o * (r_i - rbar) / rbar) + epsilon_n;
+    end
+end
 %% Calculate percent chance agreement for each item and overall
 p_c_i = zeros(n,1);
 for i = 1:n
@@ -174,7 +196,7 @@ for i = 1:n
 end
 P_C = mean(p_c_i);
 %% Calculate reliability point estimate
-PI = (P_O - P_C) / (1 - P_C);
+ALPHA = (P_O - P_C) / (1 - P_C);
 %% Calculate the variance of the reliability point estimate
 v_inner = nan(n,1);
 for i = 1:n
@@ -184,17 +206,17 @@ for i = 1:n
     else
         pi_i = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
     end
-    pistar_i = pi_i - 2 * (1 - PI) * ((p_c_i(i) - P_C) / (1 - P_C));
-    v_inner(i) = (pistar_i - PI) ^ 2;
+    pistar_i = pi_i - 2 * (1 - ALPHA) * ((p_c_i(i) - P_C) / (1 - P_C));
+    v_inner(i) = (pistar_i - ALPHA) ^ 2;
 end
 v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
 %% Calculate the standard error and confidence interval
 SE = sqrt(v);
-CI = [PI - 1.96 * SE, PI + 1.96 * SE];
+CI = [ALPHA - 1.96 * SE, ALPHA + 1.96 * SE];
 %% Output reliability and variance components
 fprintf('Percent observed agreement = %.3f\n',P_O);
 fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nScott''s pi = %.3f\n',PI);
+fprintf('\nScott''s pi = %.3f\n',ALPHA);
 fprintf('Standard Error (SE) = %.3f\n',SE);
 fprintf('95%% Confidence Interval = %.3f to %.3f\n',CI(1),CI(2));
 
