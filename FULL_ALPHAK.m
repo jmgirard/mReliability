@@ -62,14 +62,8 @@ CODES(all(~isfinite(CODES),2),:) = [];
 nprime = sum(sum(isfinite(CODES),2)>=2);
 x = unique(CODES);
 x(~isfinite(x)) = [];
-if exist(CATEGORIES,'var')==0
-    CATEGORIES = x;
-elseif isempty(CATEGORIES)
-    CATEGORIES = x;
-end
-CATEGORIES = sort(unique(CATEGORIES(:)));
-q = length(CATEGORIES);
 if nargin < 2
+    CATEGORIES = x;
     SCALE = 'nominal';
     RATIO = 0;
 elseif nargin < 3
@@ -78,6 +72,11 @@ elseif nargin < 3
 elseif nargin < 4
     RATIO = 0;
 end
+if isempty(CATEGORIES)
+    CATEGORIES = x;
+end
+CATEGORIES = sort(unique(CATEGORIES(:)));
+q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of coders = %d\n',j);
