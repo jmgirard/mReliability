@@ -4,8 +4,8 @@ function [GAMMA, P_O, P_C, SE, CI] = FULL_GAMMA(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
-%   column corresponds to a single source of measurement (i.e., coder).
-%   This function can handle any number of coders and values.
+%   column corresponds to a single source of measurement (i.e., rater).
+%   This function can handle any number of raters and values.
 %
 %   CATEGORIES is an optional parameter specifying the possible categories
 %   as a numerical vector. If this variable is not specified, then the
@@ -27,7 +27,7 @@ function [GAMMA, P_O, P_C, SE, CI] = FULL_GAMMA(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   AC is a chance-adjusted index of agreement. When the nominal scale is
 %   selected, Gwet calls it AC1; with other scales it is called AC2. AC
-%   ranges from -1 to 1 where 0 means coders were no better than chance.
+%   ranges from -1 to 1 where 0 means raters were no better than chance.
 %
 %   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
@@ -57,7 +57,7 @@ function [GAMMA, P_O, P_C, SE, CI] = FULL_GAMMA(CODES, CATEGORIES, SCALE, RATIO)
 %% Remove items with all missing codes
 CODES(all(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
-[n,j] = size(CODES);
+[n,r] = size(CODES);
 nprime = sum(sum(isfinite(CODES),2)>=2);
 x = unique(CODES);
 x(~isfinite(x)) = [];
@@ -78,20 +78,20 @@ CATEGORIES = sort(unique(CATEGORIES(:)));
 q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
-fprintf('Number of coders = %d\n',j);
+fprintf('Number of raters = %d\n',r);
 fprintf('Possible categories = %s\n',mat2str(CATEGORIES));
 fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
-%% Check for valid data from two coders
+%% Check for valid data from two raters
 if n < 1
     GAMMA = NaN;
     fprintf('\nERROR: At least 1 item is required.\n')
     return;
 end
-if j < 2
+if r < 2
     GAMMA = NaN;
-    fprintf('\nERROR: At least 2 coders are required.\n');
+    fprintf('\nERROR: At least 2 raters are required.\n');
     return;
 end
 if any(ismember(x,CATEGORIES)==0)

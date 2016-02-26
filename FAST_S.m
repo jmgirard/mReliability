@@ -1,12 +1,12 @@
 function [S] = FAST_S(CODES, Q)
-% Quickly calculate Bennett's S index for nominal coding from two coders
+% Quickly calculate Bennett's S index for nominal coding from two raters
 %   [S] = FAST_S(CODES, Q)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
-%   column corresponds to a single source of measurement (i.e., coder).
-%   This function requires nominal coding from exactly two coders (the
-%   FULL_S function can handle any number of coders and different scales).
+%   column corresponds to a single source of measurement (i.e., rater).
+%   This function requires nominal coding from exactly two raters (the
+%   FULL_S function can handle any number of raters and different scales).
 %   Items with any missing codes (e.g., NaN) will be dropped from analysis.
 %
 %   Q is an optional parameter specifying the total number of categories.
@@ -16,7 +16,7 @@ function [S] = FAST_S(CODES, Q)
 %
 %   S is a chance-adjusted index of agreement. It assumes that each
 %   category has an equal chance of being selected at random. It ranges
-%   from -1.0* to 1.0 where 0.0 means coders were no better than chance.
+%   from -1.0* to 1.0 where 0.0 means raters were no better than chance.
 %   *The actual lower bound is determined by the number of categories.
 %   
 %   Example usage: S = FAST_S(smiledata,2);
@@ -30,7 +30,7 @@ function [S] = FAST_S(CODES, Q)
 %   The Public Opinion Quarterly, 18(3), 303–308.
 %
 %   Zhao, X., Liu, J. S., & Deng, K. (2012).
-%   Assumptions behind inter-coder reliability indices.
+%   Assumptions behind inter-rater reliability indices.
 %   In C. T. Salmon (Ed.), Communication Yearbook (pp. 418–480). Routledge.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +38,7 @@ function [S] = FAST_S(CODES, Q)
 %% Remove items with any missing codes
 CODES(any(~isfinite(CODES),2),:) = [];
 %% Calculate basic descriptives
-[n,j] = size(CODES);
+[n,r] = size(CODES);
 x = unique(CODES);
 if nargin < 2
     q = length(x);
@@ -47,18 +47,18 @@ else
 end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
-fprintf('Number of coders = %d\n',j);
+fprintf('Number of raters = %d\n',r);
 fprintf('Number of possible categories = %d\n',q);
 fprintf('Observed categories = %s\n',mat2str(x));
-%% Check for valid data from two coders
+%% Check for valid data from two raters
 if n < 1
     S = NaN;
     fprintf('ERROR: At least 1 item is required.\n')
     return;
 end
-if j ~= 2
+if r ~= 2
     S = NaN;
-    fprintf('ERROR: Use FULL_S() for more than 2 coders.\n');
+    fprintf('ERROR: Use FULL_S() for more than 2 raters.\n');
     return;
 end
 %% Calculate components and reliability

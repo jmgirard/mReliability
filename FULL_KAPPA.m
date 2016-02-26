@@ -4,8 +4,8 @@ function [KAPPA, P_O, P_C, SE, CI] = FULL_KAPPA(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
-%   column corresponds to a single source of measurement (i.e., coder).
-%   This function can handle any number of coders and values.
+%   column corresponds to a single source of measurement (i.e., rater).
+%   This function can handle any number of raters and values.
 %
 %   CATEGORIES is an optional parameter specifying the possible categories
 %   as a numerical vector. If this variable is not specified, then the
@@ -82,12 +82,12 @@ CATEGORIES = sort(unique(CATEGORIES(:)));
 q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
-fprintf('Number of coders = %d\n',r);
+fprintf('Number of raters = %d\n',r);
 fprintf('Possible categories = %s\n',mat2str(CATEGORIES));
 fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 fprintf('Sampling fraction = %.3f\n',RATIO);
-%% Check for valid data from multiple coders
+%% Check for valid data from multiple raters
 if n < 1
     KAPPA = NaN;
     fprintf('\nERROR: At least 1 item is required.\n')
@@ -95,7 +95,7 @@ if n < 1
 end
 if r < 2
     KAPPA = NaN;
-    fprintf('\nERROR: At least 2 coders are required.\n');
+    fprintf('\nERROR: At least 2 raters are required.\n');
     return;
 end
 if any(ismember(x,CATEGORIES)==0)
