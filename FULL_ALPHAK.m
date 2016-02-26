@@ -178,6 +178,7 @@ for i = 1:n
         p_oEn_i(i) = (1 - epsilon_n) * (p_o_i(i) - p_o * (r_i - rbar) / rbar) + epsilon_n;
     end
 end
+P_O = mean(p_oEn_i);
 %% Calculate percent chance agreement for each item and overall
 p_c_i = zeros(n,1);
 for i = 1:n
@@ -191,8 +192,9 @@ for i = 1:n
             pibar_dotk = pibar_dotk + w(k,l) * pi_k(k);
         end
         pibar_k = (pibar_kdot + pibar_dotk) / 2;
-        p_c_i(i) = p_c_i(i) + pibar_k * r_ik / r_i;
+        p_c_i(i) = p_c_i(i) + pibar_k * r_ik / rbar;
     end
+    p_c_i(i) = p_c_i(i) - (r_i - rbar) / rbar;
 end
 P_C = mean(p_c_i);
 %% Calculate reliability point estimate
@@ -202,21 +204,21 @@ v_inner = nan(n,1);
 for i = 1:n
     r_i = sum(isfinite(CODES(i,:)));
     if r_i < 2
-        pi_i = 0;
+        alpha_i = 0;
     else
-        pi_i = (n / nprime) * (p_o_i(i) - P_C) / (1 - P_C);
+        alpha_i = (p_oEn_i(i) - P_C) / (1 - P_C);
     end
-    pistar_i = pi_i - 2 * (1 - ALPHA) * ((p_c_i(i) - P_C) / (1 - P_C));
-    v_inner(i) = (pistar_i - ALPHA) ^ 2;
+    alphastar_i = alpha_i - (1 - ALPHA) * ((p_c_i(i) - P_C) / (1 - P_C));
+    v_inner(i) = (alphastar_i - ALPHA) ^ 2;
 end
-v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
+v = ((1 - RATIO) / nprime) * (1 / (nprime - 1)) * sum(v_inner);
 %% Calculate the standard error and confidence interval
 SE = sqrt(v);
 CI = [ALPHA - 1.96 * SE, ALPHA + 1.96 * SE];
 %% Output reliability and variance components
 fprintf('Percent observed agreement = %.3f\n',P_O);
 fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nScott''s pi = %.3f\n',ALPHA);
+fprintf('\nKrippendorff''s alpha = %.3f\n',ALPHA);
 fprintf('Standard Error (SE) = %.3f\n',SE);
 fprintf('95%% Confidence Interval = %.3f to %.3f\n',CI(1),CI(2));
 
