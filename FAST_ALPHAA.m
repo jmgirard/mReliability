@@ -28,6 +28,9 @@ function [ ALPHAA ] = FAST_ALPHAA( CODES, CRITERIA )
 %% Calculate initial variables
 [n,r] = size(CODES);
 q = length(unique(CODES(:)));
+if nargin < 1
+    CRITERIA = 1e-7;
+end
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of raters = %d\n',r);
@@ -45,50 +48,47 @@ if r ~= 2
     return;
 end
 %% Construct contingency table
-ctable = nan(q,q);
+ct = nan(q,q);
 for k = 1:q
     for l = 1:q
-        ctable(l,k) = sum(CODES(:,1)==k & CODES(:,2)==l);
+        ct(l,k) = sum(CODES(:,1)==k & CODES(:,2)==l);
     end
 end
-%% Initiate values
-alpha = nan(1001,1);
-p_k_A = nan(1001,q);
-p_k_B = nan(1001,q);
-p_c = nan(1001,1);
-%% Calculate constants
-p_o = trace(ctable) / n;
-p_kplus = sum(ctable,1) ./ n;
-p_plusk = (sum(ctable,2) ./ n)';
-%% Calculate starting values
-p_k_A(1,:) = p_kplus;
-p_k_B(1,:) = p_plusk;
-p_c(1) = p_k_A(1,:) * p_k_B(1,:)';
-alpha(1) = (p_o - p_c(1)) / (1 - p_c(1));
-%% Iterate until convergence
-for t = 1:1000
-    p_c(t) = p_k_A(t,:) * p_k_B(t,:)';
-    for k = 1:q
-        p_k_A(t+1,k) = p_kplus(k) / ((1 - alpha(t)) + (alpha(t) * p_k_B(t,k))/(p_c(t)));
-        p_k_B(t+1,k) = p_plusk(k) / ((1 - alpha(t)) + (alpha(t) * p_k_A(t,k))/(p_c(t)));
+ct = ct + 1/numel(ct);
+d = eye(q);
+n = n + 1;
+%%
+p_o = sum(sum(d .* ct)) / n;
+n_kplus = sum(ct,2);
+n_plusk = sum(ct,1);
+p_kplus = n_kplus / n;
+p_plusk = n_plusk / n;
+p_c = 0;
+for k = 1:q
+    for l = 1:q
+        p_c = p_c + p_kplus(k) * p_plusk(l) * d(k,l);
     end
-    alpha(t+1) = (p_o - p_c(t)) / (1 - p_c(t));
-    if t==1
-        continue;
-    else
-        if abs(alpha(t) - alpha(t+1)) < CRITERIA
-            ALPHAA = alpha(t+1);
-            fprintf('Converged in %d iterations\n',t);
-            fprintf('Percent observed agreement = %.3f\n',p_o);
-            fprintf('Percent chance agreement = %.3f\n',p_c(t));
-            fprintf('\nAickin''s alpha coefficient = %.3f\n',alpha(t+1));
-            return;
+end
+alpha = (p_o - p_c) / (1 - p_c);
+flag = 1;
+while flag==1
+    old_alpha = alpha;
+    p_kplus = n_kplus ./ (n * (1 - alpha + alpha * d * p_plusk' / p_c));
+    p_kplus(1) = 1 - sum(p_kplus(2:end));
+    p_plusk = n_plusk ./ (n * (1 - alpha + alpha * p_kplus' * d / p_c));
+    p_plusk(1) = 1 - sum(p_plusk(2:end));
+    p_c = 0;
+    for k = 1:q
+        for l = 1:q
+            p_c = p_c + p_kplus(k) * p_plusk(l) * d(k,l);
         end
     end
+    alpha = (p_o - p_c) / (1 - p_c);
+    flag = abs(alpha - old_alpha) > CRITERIA;
 end
-fprintf('Failed to converge in 1000 iterations\n');
 fprintf('Percent observed agreement = %.3f\n',p_o);
-fprintf('Final percent chance agreement = %.3f\n',p_c(t));
-fprintf('\nFinal Aickin''s alpha coefficient = %.3f\n',alpha(t+1));
+fprintf('Final percent chance agreement = %.3f\n',p_c);
+fprintf('\nFinal Aickin''s alpha coefficient = %.3f\n',alpha);
+ALPHAA = alpha;
 
 end
