@@ -1,19 +1,24 @@
-function [ ALPHAA ] = FAST_ALPHAA( CODES, CRITERIA )
+function [ ALPHAA ] = FAST_ALPHAA( CODES, CATEGORIES, CRITERION )
 % Calculate Aickin's Alpha for nominal coding from two raters
-%   [ALPHAA] = FAST_ALPHAA(CODES, CRITERIA)
+%   [ALPHAA] = FAST_ALPHAA(CODES, CATEGORIES, CRITERION)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., rater).
 %   This function can only handle two raters and nominal categories.
 %
-%   CRITERIA is an optional parameter specifying the convergence criteria
+%   CATEGORIES is an optional parameter specifying the possible categories
+%   as a numerical vector. If this variable is not specified, then the
+%   possible categories are inferred from the CODES matrix. This can
+%   underestimate reliability if all possible categories aren't used.
+%
+%   CRITERION is an optional parameter specifying the convergence criterion
 %   for the iterative algorithm. The algorithm will stop when consecutive
 %   alphas differ by less than this value. By default, it is set to 1e-7.
 %
 %   ALPHAA is a chance-adjusted index of agreement.
 %
-%   Example usage: [ALPHAA] = FAST_ALPHAA(smiledata,0.001);
+%   Example usage: [ALPHAA] = FAST_ALPHAA(smiledata,[0,1],0.001);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
@@ -29,17 +34,29 @@ function [ ALPHAA ] = FAST_ALPHAA( CODES, CRITERIA )
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Calculate initial variables
+%% Remove items with any missing codes
+CODES(any(~isfinite(CODES),2),:) = [];
+%% Calculate basic descriptives
 [n,r] = size(CODES);
-q = length(unique(CODES(:)));
-if nargin < 1
-    CRITERIA = 1e-7;
+x = unique(CODES);
+x(~isfinite(x)) = [];
+if nargin < 2
+    CATEGORIES = x;
+    CRITERION = 1e-7;
+elseif nargin < 3
+    CRITERION = 1e-7;
 end
+if isempty(CATEGORIES)
+    CATEGORIES = x;
+end
+CATEGORIES = sort(unique(CATEGORIES(:)));
+q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of raters = %d\n',r);
-fprintf('Number of possible categories = %d\n',2);
+fprintf('Possible categories = %s\n',mat2str(CATEGORIES));
 fprintf('Observed categories = %s\n',mat2str(x));
+fprintf('Convergence criterion = %d\n',CRITERION);
 %% Check for valid data
 if n < 1
     ALPHAA = NaN;
@@ -49,6 +66,10 @@ end
 if r ~= 2
     ALPHAA = NaN;
     fprintf('ERROR: Exactly 2 raters are required.\n')
+    return;
+end
+if any(ismember(x,CATEGORIES)==0)
+    fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
     return;
 end
 %% Construct contingency table
@@ -89,11 +110,11 @@ while flag==1
         end
     end
     alpha = (p_o - p_c) / (1 - p_c);
-    flag = abs(alpha - old_alpha) > CRITERIA;
+    flag = abs(alpha - old_alpha) > CRITERION;
 end
 fprintf('Percent observed agreement = %.3f\n',p_o);
-fprintf('Final percent chance agreement = %.3f\n',p_c);
-fprintf('\nFinal Aickin''s alpha coefficient = %.3f\n',alpha);
+fprintf('Percent chance agreement = %.3f\n',p_c);
+fprintf('\nAickin''s alpha coefficient = %.3f\n',alpha);
 ALPHAA = alpha;
 
 end
