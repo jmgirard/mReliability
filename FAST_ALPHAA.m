@@ -1,15 +1,19 @@
 function [ ALPHAA ] = FAST_ALPHAA( CODES, CRITERIA )
 % Calculate Aickin's Alpha for nominal coding from two raters
-%   [ALPHAA] = FAST_ALPHAA(CODES)
+%   [ALPHAA] = FAST_ALPHAA(CODES, CRITERIA)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., rater).
 %   This function can only handle two raters and nominal categories.
 %
+%   CRITERIA is an optional parameter specifying the convergence criteria
+%   for the iterative algorithm. The algorithm will stop when consecutive
+%   alphas differ by less than this value. By default, it is set to 1e-7.
+%
 %   ALPHAA is a chance-adjusted index of agreement.
 %
-%   Example usage: [ALPHAA] = FAST_ALPHAA(smiledata);
+%   Example usage: [ALPHAA] = FAST_ALPHAA(smiledata,0.001);
 %
 %   (c) Jeffrey M Girard, 2016
 %   
