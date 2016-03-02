@@ -57,7 +57,7 @@ end
 ct = ct + 1/numel(ct);
 d = eye(q);
 n = n + 1;
-%%
+%% Calculate starting values
 p_o = sum(sum(d .* ct)) / n;
 n_kplus = sum(ct,2);
 n_plusk = sum(ct,1);
@@ -71,6 +71,7 @@ for k = 1:q
 end
 alpha = (p_o - p_c) / (1 - p_c);
 flag = 1;
+%% Iterate until converence
 while flag==1
     old_alpha = alpha;
     p_kplus = n_kplus ./ (n * (1 - alpha + alpha * d * p_plusk' / p_c));
