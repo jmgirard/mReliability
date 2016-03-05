@@ -34,9 +34,6 @@ x(~isfinite(x)) = [];
 if nargin < 2
     CATEGORIES = x;
 end
-if exist('CATEGORIES','var')==0
-    CATEGORIES = x;
-end
 if isempty(CATEGORIES)
     CATEGORIES = x;
 end
