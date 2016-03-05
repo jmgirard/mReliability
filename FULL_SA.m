@@ -1,7 +1,29 @@
 function [SA] = FULL_SA(CODES, CATEGORIES)
-%   (c) Jeffrey M Girard, 2015
+% Calculate specific agreement for each category
+%   [SA] = FULL_SA(CODES, CATEGORIES)
+%
+%   CODES should be a numerical matrix where each row corresponds to a
+%   single item of measurement (e.g., participant or question) and each
+%   column corresponds to a single source of measurement (i.e., rater).
+%   This function can handle multiple raters and multiple categories.
+%
+%   CATEGORIES is an optional parameter specifying the possible categories
+%   as a numerical vector. If this variable is not specified, then the
+%   possible categories are inferred from CODES (in numerical order).
+%
+%   SA is a vector containing specific agreement scores for each category.
+%
+%   Example usage: [SA] = FULL_SA(smiledata,[0,1]);
 %   
-%   Reference: http://www.john-uebersax.com/stat/raw.htm
+%   (c) Jeffrey M Girard, 2016
+%   
+%   References:
+%
+%   Cicchetti, D. V., & Feinstein, A. R., High agreement but low kappa: II.
+%   Resolving the paradoxes. Journal of Clinical Epidemiology, 1990, 43,
+%   551-558.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items with all missing codes
 CODES(all(~isfinite(CODES),2),:) = [];
@@ -10,6 +32,9 @@ CODES(all(~isfinite(CODES),2),:) = [];
 x = unique(CODES);
 x(~isfinite(x)) = [];
 if nargin < 2
+    CATEGORIES = x;
+end
+if exist('CATEGORIES','var')==0
     CATEGORIES = x;
 end
 if isempty(CATEGORIES)
@@ -45,6 +70,7 @@ for k = 1:q
     denominator = 0;
     for i = 1:n
         r_i = sum(isfinite(CODES(i,:)));
+        if r_i < 2, continue; end
         r_ik = sum(CODES(i,:)==CATEGORIES(k));
         numerator = numerator + (r_ik * (r_ik - 1));
         denominator = denominator + (r_ik * (r_i - 1));
