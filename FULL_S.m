@@ -1,6 +1,6 @@
 function [S, P_O, P_C, SE, CI] = FULL_S(CODES, CATEGORIES, SCALE, RATIO)
 % Calculate the generalized form of Bennett's S index
-%   [S, P_O, P_E, SE, CI] = FULL_S(DATA, CATEGORIES, SCALE, RATIO)
+%   [S, P_O, P_E, SE, CI] = FULL_S(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
