@@ -61,6 +61,6 @@ p_o = (n_11 + n_22) / n;
 ALPHAA = p_o * (1 - 1 / sqrt((n_11 * n_22) / (n_12 * n_21)));
 fprintf('Percent observed agreement = %.3f\n',p_o);
 fprintf('Percent chance agreement = %.3f\n',p_c);
-fprintf('\nAickin''s alpha coefficient = %.3f\n',alpha);
+fprintf('\nAickin''s alpha coefficient = %.3f\n',ALPHAA);
 
 end
