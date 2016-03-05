@@ -149,7 +149,6 @@ for i = 1:n
 end
 P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2)>=2);
 %% Calculate percent chance agreement for each item and overall
-p_c
 T_w = sum(sum(w));
 P_C = T_w / (q ^ 2);
 %% Calculate S point estimate
