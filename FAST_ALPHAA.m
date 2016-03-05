@@ -31,6 +31,7 @@ CODES(any(~isfinite(CODES),2),:) = [];
 [n,r] = size(CODES);
 x = unique(CODES);
 x(~isfinite(x)) = [];
+q = length(x);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
 fprintf('Number of raters = %d\n',r);
@@ -46,7 +47,12 @@ if r ~= 2
     fprintf('ERROR: Exactly 2 raters are required.\n')
     return;
 end
-%% 
+if q ~= 2
+    ALPHAA = NaN;
+    fprintf('ERROR: Exactly 2 categories are required.\n')
+    return;
+end
+%% Calculate alpha coefficient
 n_11 = sum(CODES(:,1)==x(1) & CODES(:,2)==x(1));
 n_22 = sum(CODES(:,1)==x(2) & CODES(:,2)==x(2));
 n_12 = sum(CODES(:,1)==x(1) & CODES(:,2)==x(2));
