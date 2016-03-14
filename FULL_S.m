@@ -1,6 +1,6 @@
 function [S, P_O, P_C, SE, CI] = FULL_S(CODES, CATEGORIES, SCALE, RATIO)
 % Calculate the generalized form of Bennett's S index
-%   [S, P_O, P_E, SE, CI] = FULL_S(DATA, CATEGORIES, SCALE, RATIO)
+%   [S, P_O, P_E, SE, CI] = FULL_S(CODES, CATEGORIES, SCALE, RATIO)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -75,7 +75,7 @@ end
 if isempty(CATEGORIES)
     CATEGORIES = x;
 end
-CATEGORIES = sort(unique(CATEGORIES(:)));
+CATEGORIES = unique(CATEGORIES(:));
 q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
@@ -147,7 +147,7 @@ for i = 1:n
         end
     end
 end
-P_O = sum(p_o_i) / sum(sum(isfinite(CODES),2)>=2);
+P_O = sum(p_o_i) / nprime;
 %% Calculate percent chance agreement for each item and overall
 T_w = sum(sum(w));
 P_C = T_w / (q ^ 2);

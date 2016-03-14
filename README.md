@@ -11,6 +11,7 @@ mReliability is a collection of open-source functions for calculating inter-obse
 * ![Gwet's gamma coefficient](https://github.com/jmgirard/mReliability/wiki/Gwet's-gamma-coefficient)
 * ![Krippendorff's alpha coefficient](https://github.com/jmgirard/mReliability/wiki/Krippendorff's-alpha-coefficient)
 * ![Scott's pi coefficient](https://github.com/jmgirard/mReliability/wiki/Scott's-pi-coefficient)
+* ![Specific agreement coefficient](https://github.com/jmgirard/mReliability/wiki/Specific-agreement-coefficient)
 
 #### Indexes for Dimensional Measurements
 * ![Intraclass correlation coefficient](https://github.com/jmgirard/mReliability/wiki/Intraclass-correlation-coefficient)

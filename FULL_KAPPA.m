@@ -167,8 +167,9 @@ for i = 1:n
                 lambda_gk_inner(l) = w(k,l) * (delta_gl - p_gl * (epsilon_g - n_g / n));
             end
             lambda_gk = (n / n_g) * sum(lambda_gk_inner);
-            pbar_plusk = zeros(r,1);
+            pbar_plusk = 0;
             for gg = 1:r
+                n_gg = sum(isfinite(CODES(:,gg)));
                 pbar_plusk = pbar_plusk + sum(CODES(:,g)==x(k)) / n_gg;
             end
             pbar_plusk = pbar_plusk / r;
