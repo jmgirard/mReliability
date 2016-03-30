@@ -99,7 +99,13 @@ if r < 2
     return;
 end
 if any(ismember(x,CATEGORIES)==0)
+    KAPPA = NaN;
     fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
+    return;
+end
+if length(x) < 2
+    KAPPA = NaN;
+    fprintf('ERROR: At least two categories must be observed to calculate KAPPA.\n');
     return;
 end
 %% Calculate weights
