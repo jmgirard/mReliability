@@ -167,7 +167,7 @@ end
 v = ((1 - RATIO) / n) * (1 / (n - 1)) * sum(v_inner);
 %% Calculate standard error and confidence interval
 SE = sqrt(v);
-CI = [S - 1.96 * SE, S + 1.96 * SE];
+CI = [S - nctinv(0.9750,n-1,0) * SE, S + nctinv(0.9750,n-1,0) * SE];
 %% Output reliability and variance components
 fprintf('Percent observed agreement = %.3f\n',P_O);
 fprintf('Percent chance agreement = %.3f\n',P_C);
