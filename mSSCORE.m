@@ -58,7 +58,7 @@ end
 if isempty(CATEGORIES)
     CATEGORIES = x;
 end
-CATEGORIES = sort(unique(CATEGORIES(:)));
+CATEGORIES = unique(CATEGORIES(:));
 q = length(CATEGORIES);
 %% Output basic descriptives
 fprintf('Number of items = %d\n',n);
