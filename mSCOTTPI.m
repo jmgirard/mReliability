@@ -24,7 +24,7 @@ function [SCOTTPI, P_O, P_C] = mSCOTTPI(CODES, CATEGORIES, SCALE)
 %
 %   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %
-%   Example usage: [mSCOTTPI, P_O, P_C] = mSCOTTPI(smiledata,[0,1],'nominal');
+%   Example usage: [SCOTTPI, P_O, P_C] = mSCOTTPI(smiledata,[0,1],'nominal');
 %   
 %   (c) Jeffrey M Girard, 2016
 %   
