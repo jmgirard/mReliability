@@ -1,6 +1,6 @@
 function [KAPPA, P_O, P_C] = mKAPPA(CODES, CATEGORIES, SCALE)
 % Calculate Cohen's/Conger's kappa coefficient using generalized formulas
-%   [KAPPA, P_O, P_C] = FULL_KAPPA(CODES, CATEGORIES, SCALE)
+%   [KAPPA, P_O, P_C] = mKAPPA(CODES, CATEGORIES, SCALE)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
 %   single item of measurement (e.g., participant or question) and each
@@ -24,7 +24,7 @@ function [KAPPA, P_O, P_C] = mKAPPA(CODES, CATEGORIES, SCALE)
 %
 %   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %
-%   Example usage: [KAPPA,P_O,P_C] = FULL_KAPPA(smiledata,[0,1],'nominal');
+%   Example usage: [KAPPA,P_O,P_C] = mKAPPA(smiledata,[0,1],'nominal');
 %
 %   (c) Jeffrey M Girard, 2016
 %   

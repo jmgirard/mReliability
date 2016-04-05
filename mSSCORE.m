@@ -1,5 +1,5 @@
 function [SSCORE, P_O, P_C] = mSSCORE(CODES, CATEGORIES, SCALE)
-% Calculate Cohen's/Conger's kappa coefficient using generalized formulas
+% Calculate Bennett et al.'s S score using generalized formulas
 %   [SSCORE, P_O, P_C] = mSSCORE(CODES, CATEGORIES, SCALE)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
