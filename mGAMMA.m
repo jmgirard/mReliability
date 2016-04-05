@@ -130,7 +130,7 @@ possible = r_i .* (r_i - 1);
 P_O = sum(observed(r_i >= 2) ./ (possible(r_i >= 2))) ./ nprime;
 %% Calculate percent chance agreement
 pihat = transpose(repmat(1/n,1,n,1) * (nxq ./ (r_i * ones(1,q))));
-P_C = sum(sum(weights)) .* sum(pihat .* (1 - pihat)) ./ (q * (q - 1));
+P_C = sum(weights(:)) .* sum(pihat .* (1 - pihat)) ./ (q * (q - 1));
 %% Calculate reliability point estimate
 GAMMA = (P_O - P_C) / (1 - P_C);
 %% Output reliability and variance components

@@ -131,7 +131,7 @@ nprime = sum(r_i >= 2);
 possible = r_i .* (r_i - 1);
 P_O = sum(observed(r_i >= 2) ./ (possible(r_i >= 2))) ./ nprime;
 %% Calculate percent chance agreement
-pihat = transpose(transpose(repmat(1/n,n,1)) * (nxq ./ (r_i * transpose(ones(q,1)))));
+pihat = transpose(repmat(1/n,1,n) * (nxq ./ (r_i * ones(1,q))));
 P_C = sum(sum(weights .* (pihat * transpose(pihat))));
 %% Calculate reliability point estimate
 SCOTTPI = (P_O - P_C) / (1 - P_C);

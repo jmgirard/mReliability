@@ -132,7 +132,7 @@ nprime = sum(r_i >= 2);
 possible = r_i .* (r_i - 1);
 P_O = sum(observed(r_i >= 2) ./ (possible(r_i >= 2))) ./ nprime;
 %% Calculate percent chance agreement
-P_C = sum(sum(weights)) / (q ^ 2);
+P_C = sum(weights(:)) / (q ^ 2);
 %% Calculate reliability point estimate
 SSCORE = (P_O - P_C) / (1 - P_C);
 %% Output reliability and variance components
