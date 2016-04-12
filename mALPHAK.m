@@ -43,8 +43,8 @@ function [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, SCALE)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Remove items with all missing codes
-CODES(all(~isfinite(CODES),2),:) = [];
+%% Remove items that do not have codes from at least two raters
+CODES(sum(isfinite(CODES),2)<2,:) = [];
 %% Calculate basic descriptives
 [n,r] = size(CODES);
 x = unique(CODES);
