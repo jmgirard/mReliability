@@ -1,6 +1,6 @@
-function [ICC,LB,UB] = ICC_A_k(DATA,ALPHA)
+function [ICC, LB, UB] = ICC_A_k(DATA, ALPHA)
 % Calculate the average rater agreement intraclass correlation coefficient
-%   [ICC,LB,UB] = ICC_A_k(DATA)
+%   [ICC, LB, UB] = ICC_A_k(DATA)
 %
 %   DATA is a numerical matrix of ratings (missing values = NaN).
 %   Each row is a single item and each column is a single rater.
