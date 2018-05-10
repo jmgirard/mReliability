@@ -9,7 +9,7 @@ mReliability is a collection of open-source functions for calculating inter-obse
 * ![Weighting scheme](https://github.com/jmgirard/mReliability/wiki/Weighting-scheme)
 
 #### Indexes for Categorical Measurements
-* ![Percent Observed Agreement](https://github.com/jmgirard/mReliability/wiki/Observed-agreement)
+* ![Agreement or Accuracy](https://github.com/jmgirard/mReliability/wiki/Agreement-or-Accuracy)
 * ![Bennett et al.'s S score](https://github.com/jmgirard/mReliability/wiki/Bennett-et-al.'s-S-score)
 * ![Cohen's kappa coefficient](https://github.com/jmgirard/mReliability/wiki/Cohen's-kappa-coefficient)
 * ![Gwet's gamma coefficient](https://github.com/jmgirard/mReliability/wiki/Gwet's-gamma-coefficient)
