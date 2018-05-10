@@ -1,9 +1,8 @@
-function [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, SCALE)
+function [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, WEIGHTING)
 % Calculate Krippendorff's alpha coefficient using generalized formulas
-%   [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, SCALE)
 %
 %   CODES should be a numerical matrix where each row corresponds to a
-%   single item of measurement (e.g., participant or question) and each
+%   single object of measurement (e.g., participant or question) and each
 %   column corresponds to a single source of measurement (i.e., rater).
 %   This function can handle any number of raters and values.
 %
@@ -12,133 +11,85 @@ function [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, SCALE)
 %   possible categories are inferred from the CODES matrix. This can
 %   underestimate reliability if all possible categories aren't used.
 %
-%   SCALE is an optional parameter specifying the scale of measurement:
-%   -Use 'nominal' for unordered categories (default)
-%   -Use 'ordinal' for ordered categories of unequal size
-%   -Use 'interval' for ordered categories with equal spacing
-%   -Use 'ratio' for ordered categories with equal spacing and a zero point
+%   WEIGHTING is an optional parameter specifying the weighting scheme to
+%   be used for partial agreement. The three options are below:
+%       'identity' is for unordered/nominal categories (default)
+%       'linear' is for ordered categories and is relatively strict
+%       'quadratic' is for ordered categories and is relatively forgiving
 %
-%   ALPHAK is a chance-corrected index of agreement.
+%   ALPHAK is a chance-adjusted index of agreement.
 %
 %   P_O is the percent observed agreement (from 0.000 to 1.000).
 %
 %   P_C is the estimated percent chance agreement (from 0.000 to 1.000).
 %
-%   Example usage: [ALPHAK, P_O, P_C] = mALPHAK(smiledata,[0,1],'nominal');
+%   Example usage: mALPHAK(fishdata, [1, 2, 3], 'identity')
 %   
-%   (c) Jeffrey M Girard, 2016
-%   
-%   References:
-%
-%   Krippendorff, K. (1970). Estimating the reliability, systematic error
-%   and random error of interval data. Educational and Psychological
-%   Measurement, 30(1), 61–70.
-%   
-%   Krippendorff, K. (1980). Content analysis: An introduction to its
-%   methodology. Newbury Park, CA: Sage Publications.
-%
-%   Gwet, K. L. (2014). Handbook of inter-rater reliability: The definitive
-%   guide to measuring the extent of agreement among raters (4th ed.).
-%   Gaithersburg, MD: Advanced Analytics.
+%   (c) Jeffrey M Girard, 2016-2018
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Remove items that do not have codes from at least two raters
 CODES(sum(isfinite(CODES),2)<2,:) = [];
 %% Calculate basic descriptives
-[n,r] = size(CODES);
+[n, r] = size(CODES);
 x = unique(CODES);
 x(~isfinite(x)) = [];
 if nargin < 2
     CATEGORIES = x;
-    SCALE = 'nominal';
+    WEIGHTING = 'identity';
 elseif nargin < 3
-    SCALE = 'nominal';
+    WEIGHTING = 'identity';
 end
 if isempty(CATEGORIES)
     CATEGORIES = x;
 end
 CATEGORIES = unique(CATEGORIES(:));
 q = length(CATEGORIES);
-%% Output basic descriptives
-fprintf('Number of items = %d\n',n);
-fprintf('Number of raters = %d\n',r);
-fprintf('Possible categories = %s\n',mat2str(CATEGORIES));
-fprintf('Observed categories = %s\n',mat2str(x));
-fprintf('Scale of measurement = %s\n',SCALE);
 %% Check for valid data from multiple raters
 if n < 1
     ALPHAK = NaN;
-    fprintf('\nERROR: At least 1 item is required.\n')
+    fprintf('ERROR: At least 1 valid object is required. \n')
     return;
 end
 if r < 2
     ALPHAK = NaN;
-    fprintf('\nERROR: At least 2 raters are required.\n');
+    fprintf('ERROR: At least 2 raters are required. \n');
     return;
 end
-if any(ismember(x,CATEGORIES)==0)
+if any(ismember(x, CATEGORIES) == 0)
     ALPHAK = NaN;
-    fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
+    fprintf('ERROR: Unexpected category in CODES. \n');
     return;
 end
-%% Calculate weights based on data scale
-weights = nan(q);
-for k = 1:q
-    for l = 1:q
-        switch SCALE
-            case 'nominal'
-                weights = eye(q);
-            case 'ordinal'
-                if k==l
-                    weights(k,l) = 1;
-                else
-                    M_kl = nchoosek((max(k,l) - min(k,l) + 1),2);
-                    M_1q = nchoosek((max(1,q) - min(1,q) + 1),2);
-                    weights(k,l) = 1 - (M_kl / M_1q);
-                end
-            case 'interval'
-                if k==l
-                    weights(k,l) = 1;
-                else
-                    dist = abs(CATEGORIES(k) - CATEGORIES(l));
-                    maxdist = max(CATEGORIES) - min(CATEGORIES);
-                    weights(k,l) = 1 - (dist / maxdist);
-                end
-            case 'ratio'
-                weights(k,l) = 1 - (((CATEGORIES(k) - CATEGORIES(l)) / (CATEGORIES(k) + CATEGORIES(l)))^2) / (((max(CATEGORIES) - min(CATEGORIES)) / (max(CATEGORIES) + min(CATEGORIES)))^2);
-                if CATEGORIES(k)==0 && CATEGORIES(l)==0, weights(k,l) = 1; end
-            otherwise
-                error('Scale must be nominal, ordinal, interval, or ratio');
-        end
-    end
-end
+%% Get weights from mWEIGHTING function
+weights = mWEIGHTING(CATEGORIES, WEIGHTING);
 %% Create n-by-q matrix (rater counts in item by category matrix)
-nxq = zeros(n,q);
+r_ik = zeros(n, q);
 for k = 1:q
     codes_k = CODES == CATEGORIES(k);
-    nxq(:,k) = codes_k * ones(r,1);
+    r_ik(:,k) = codes_k * ones(r,1);
 end
-nxq_w = transpose(weights * transpose(nxq));
+rstar_ik = transpose(weights * transpose(r_ik));
 %% Calculate percent observed agreement
-r_i = nxq * ones(q,1);
-nxq = nxq(r_i >= 2,:);
-nxq_w = nxq_w(r_i >= 2,:);
+r_i = r_ik * ones(q, 1);
+r_ik = r_ik(r_i >= 2, :);
+rstar_ik = rstar_ik(r_i >= 2, :);
 r_i = r_i(r_i >= 2);
 rbar_i = mean(r_i);
-nprime = size(nxq,1);
+nprime = size(r_ik, 1);
 epsilon = 1 / sum(r_i);
-observed = (nxq .* (nxq_w - 1)) * ones(q,1);
+observed = (r_ik .* (rstar_ik - 1)) * ones(q, 1);
 possible = rbar_i .* (r_i - 1);
 P_O = (1 - epsilon) .* sum(observed ./ (possible)) ./ nprime + epsilon;
 %% Calculate percent chance agreement
-pihat = transpose(repmat(1/n,1,n) * (nxq ./ (r_i * ones(1,q))));
+pihat = transpose(repmat(1 / n, 1, n) * (r_ik ./ (r_i * ones(1, q))));
 P_C = sum(sum(weights .* (pihat * transpose(pihat))));
 %% Calculate reliability point estimate
 ALPHAK = (P_O - P_C) / (1 - P_C);
 %% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f\n',P_O);
-fprintf('Percent chance agreement = %.3f\n',P_C);
-fprintf('\nKrippendorff''s alpha coefficient = %.3f\n',ALPHAK);
+fprintf('Percent observed agreement = %.3f \n',P_O);
+fprintf('Percent chance agreement = %.3f \n\n',P_C);
+fprintf('Krippendorff''s alpha coefficient = %.3f \n', ALPHAK);
 
 end
