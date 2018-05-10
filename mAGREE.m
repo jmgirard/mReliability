@@ -57,17 +57,17 @@ fprintf('Observed categories = %s\n',mat2str(x));
 fprintf('Scale of measurement = %s\n',SCALE);
 %% Check for valid data from multiple raters
 if n < 1
-    SSCORE = NaN;
+    P_O = NaN;
     fprintf('\nERROR: At least 1 item is required.\n')
     return;
 end
 if r < 2
-    SSCORE = NaN;
+    P_O = NaN;
     fprintf('\nERROR: At least 2 raters are required.\n');
     return;
 end
 if any(ismember(x,CATEGORIES)==0)
-    SSCORE = NaN;
+    P_O = NaN;
     fprintf('ERROR: Categories were observed in CODES that were not included in CATEGORIES.\n');
     return;
 end
