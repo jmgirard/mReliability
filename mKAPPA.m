@@ -88,7 +88,7 @@ n_g = rxq * ones(q, 1);
 p_gk = rxq ./ (n_g * ones(1, q));
 pbar_k = (transpose(p_gk) * ones(r,1)) ./ r;
 ssq_kl = (transpose(p_gk) * p_gk - r .* pbar_k * transpose(pbar_k)) ./ (r - 1);
-P_C = sum(sum(w .* (pbar_k * transpose(pbar_k) - ssq_kl ./ r)));
+P_C = sum(sum(weights .* (pbar_k * transpose(pbar_k) - ssq_kl ./ r)));
 %% Calculate reliability point estimate
 KAPPA = (P_O - P_C) / (1 - P_C);
 %% Output reliability and variance components
