@@ -56,11 +56,17 @@ if nargin < 3
 end
 
 if strcmpi(TYPE, 'table')
+    if (size(DATA, 1) ~= 2) || (size(DATA, 2) ~= 2)
+        error('With TYPE == ''table'', DATA must be 2x2');
+    end
     TP = DATA(1, 1);
     FP = DATA(1, 2);
     FN = DATA(2, 1);
     TN = DATA(2, 2);
 elseif strcmpi(TYPE, 'raw')
+    if size(DATA, 2) ~= 2
+        error('With TYPE == ''raw'', DATA must have 2 columns');
+    end
     test = DATA(:, 1);
     criterion = DATA(:, 2);
     TP = sum((test == POSCLASS) & (criterion == POSCLASS));
