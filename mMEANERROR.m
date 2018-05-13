@@ -1,4 +1,4 @@
-function [RESULTS] = mMEANERROR(DATA, YRANGE, YMEAN)
+function [RESULTS] = mMEANERROR(DATA, YRANGE, YMEAN, YSD)
 % Calculate versions of mean absolute error and root mean square error
 %
 %   DATA is a numeric matrix that contains the raw prediction data such
@@ -16,15 +16,22 @@ function [RESULTS] = mMEANERROR(DATA, YRANGE, YMEAN)
 %   mean is known from prior work. If not specified, the observed mean of
 %   the second column of DATA will be used.
 %
+%   YSD is an optional parameter representing the standard deviation (SD)
+%   of the measure to be used in normalizing MAE and RMSE. This can be
+%   helpful if the typical SD is known from prior work. If not specified,
+%   the observed SD of the second column of DATA will be used.
+%
 %   RESULTS is a struct containing measures derived from DATA:
 %       -MAE: Mean Absolute Error
-%       -NMAE: MAE Normalized by Range
-%       -CVMAE: MAE Normalized by Mean
+%       -NMAE_R: MAE Normalized by Range
+%       -NMAE_M: MAE Normalized by Mean
+%       -NMAE_S: MAE Normalized by Standard Deviation
 %       -RMSE: Root Mean Square Error
-%       -NRMSE: RMSE Normalized by Range
-%       -CVRMSE: RMSE Normalized by Mean
+%       -NRMSE_R: RMSE Normalized by Range
+%       -NRMSE_M: RMSE Normalized by Mean
+%       -NRMSE_S: RMSE Normalized by Standard Deviation
 %
-%   Example usage: mMEANERROR([preds, labels], 100, 0)
+%   Example usage: mMEANERROR([preds, labels])
 %
 %   (c) Jeffrey M. Girard, 2018
 %
@@ -57,12 +64,22 @@ else
     end
 end
 
-RESULTS.MAE = nanmean(abs(CRITERION - TEST));
-RESULTS.NMAE = RESULTS.MAE / YRANGE;
-RESULTS.CVMAE = RESULTS.MAE / YMEAN;
+if nargin < 4
+    YSD = nanstd(CRITERION);
+else
+    if ~isfinite(YSD)
+        error('YSD must be a finite number');
+    end
+end
 
-RESULTS.RMSE = sqrt(nanmean((CRITERION - TEST) ^ 2));
-RESULTS.NRMSE = RESULTS.RMSE / YRANGE;
-RESULTS.CVRMSE = RESULTS.RMSE / YMEAN;
+RESULTS.MAE = nanmean(abs(CRITERION - TEST));
+RESULTS.NMAE_R = RESULTS.MAE / YRANGE;
+RESULTS.NMAE_M = RESULTS.MAE / YMEAN;
+RESULTS.NMAE_S = RESULTS.MAE / YSD;
+
+RESULTS.RMSE = sqrt(nanmean((CRITERION - TEST) .^ 2));
+RESULTS.NRMSE_R = RESULTS.RMSE / YRANGE;
+RESULTS.NRMSE_M = RESULTS.RMSE / YMEAN;
+RESULTS.NRMSE_S = RESULTS.RMSE / YSD;
 
 end
