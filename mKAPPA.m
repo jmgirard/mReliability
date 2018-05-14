@@ -37,9 +37,9 @@ x = unique(CODES);
 x(~isfinite(x)) = [];
 if nargin < 2
     CATEGORIES = x;
-    WEIGHTING = 'nominal';
+    WEIGHTING = 'identity';
 elseif nargin < 3
-    WEIGHTING = 'nominal';
+    WEIGHTING = 'identity';
 end
 if isempty(CATEGORIES)
     CATEGORIES = x;
@@ -91,9 +91,5 @@ ssq_kl = (transpose(p_gk) * p_gk - r .* pbar_k * transpose(pbar_k)) ./ (r - 1);
 P_C = sum(sum(weights .* (pbar_k * transpose(pbar_k) - ssq_kl ./ r)));
 %% Calculate reliability point estimate
 KAPPA = (P_O - P_C) / (1 - P_C);
-%% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f \n', P_O);
-fprintf('Percent chance agreement = %.3f \n\n', P_C);
-fprintf('Cohen''s kappa coefficient = %.3f \n', KAPPA);
 
 end

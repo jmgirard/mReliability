@@ -45,17 +45,17 @@ q = length(CATEGORIES);
 %% Check for valid data from multiple raters
 if n < 1
     P_O = NaN;
-    fprintf('ERROR: At least 1 valid item is required. \n')
+    disp('ERROR: At least 1 valid item is required.');
     return;
 end
 if r < 2
     P_O = NaN;
-    fprintf('ERROR: At least 2 raters are required. \n');
+    disp('ERROR: At least 2 raters are required.');
     return;
 end
 if any(ismember(x, CATEGORIES) == 0)
     P_O = NaN;
-    fprintf('ERROR: Unexpected category in CODES. \n');
+    disp('ERROR: Unexpected category in CODES.');
     return;
 end
 %% Get weights from mWEIGHTING function
@@ -73,7 +73,5 @@ observed = (r_ik .* (rstar_ik - 1)) * ones(q,1);
 nprime = sum(r_i >= 2);
 possible = r_i .* (r_i - 1);
 P_O = sum(observed(r_i >= 2) ./ (possible(r_i >= 2))) ./ nprime;
-%% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f \n', P_O);
 
 end

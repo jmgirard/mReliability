@@ -87,9 +87,5 @@ pihat = transpose(repmat(1 / n, 1, n) * (r_ik ./ (r_i * ones(1, q))));
 P_C = sum(sum(weights .* (pihat * transpose(pihat))));
 %% Calculate reliability point estimate
 ALPHAK = (P_O - P_C) / (1 - P_C);
-%% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f \n',P_O);
-fprintf('Percent chance agreement = %.3f \n\n',P_C);
-fprintf('Krippendorff''s alpha coefficient = %.3f \n', ALPHAK);
 
 end

@@ -82,9 +82,5 @@ pihat = transpose(repmat(1 / n, 1, n, 1) * (r_ik ./ (r_i * ones(1, q))));
 P_C = sum(weights(:)) .* sum(pihat .* (1 - pihat)) ./ (q * (q - 1));
 %% Calculate reliability point estimate
 GAMMA = (P_O - P_C) / (1 - P_C);
-%% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f \n', P_O);
-fprintf('Percent chance agreement = %.3f \n\n', P_C);
-fprintf('Gwet''s gamma coefficient = %.3f \n', GAMMA);
 
 end

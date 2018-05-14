@@ -84,9 +84,5 @@ P_O = sum(observed(r_i >= 2) ./ (possible(r_i >= 2))) ./ nprime;
 P_C = sum(weights(:)) / (q ^ 2);
 %% Calculate reliability point estimate
 SSCORE = (P_O - P_C) / (1 - P_C);
-%% Output reliability and variance components
-fprintf('Percent observed agreement = %.3f \n', P_O);
-fprintf('Percent chance agreement = %.3f \n\n', P_C);
-fprintf('Bennett et al.''s S score = %.3f \n', SSCORE);
 
 end
