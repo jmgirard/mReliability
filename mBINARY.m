@@ -32,12 +32,7 @@ function [RESULT] = mBINARY(DATA, OUTPUT)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if nargin < 3
-    POSCLASS = 1;
-    NEGCLASS = 0;
-end
-
-if nargin < 4
+if nargin < 2
     OUTPUT = 'table';
 end
 
@@ -55,10 +50,10 @@ end
 
 TEST = DATA(:, 1);
 CRIT = DATA(:, 2);
-TP = sum((TEST == POSCLASS) & (CRIT == POSCLASS));
-FP = sum((TEST == POSCLASS) & (CRIT == NEGCLASS));
-FN = sum((TEST == NEGCLASS) & (CRIT == POSCLASS));
-TN = sum((TEST == NEGCLASS) & (CRIT == NEGCLASS));
+TP = sum((TEST == 1) & (CRIT == 1));
+FP = sum((TEST == 1) & (CRIT == 0));
+FN = sum((TEST == 0) & (CRIT == 1));
+TN = sum((TEST == 0) & (CRIT == 0));
 
 ACC = (TP + TN) / (TP + TN + FP + FN);
 TPR = TP / (TP + FN);
