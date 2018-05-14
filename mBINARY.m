@@ -1,4 +1,4 @@
-function [RESULTS] = mBINARY(DATA, OUTPUT)
+function [RESULT] = mBINARY(DATA, OUTPUT)
 % Calculate performance measures for binary classification tasks
 %
 %   DATA is a numeric matrix where each row is one object, the first column
@@ -7,10 +7,10 @@ function [RESULTS] = mBINARY(DATA, OUTPUT)
 %   must be labeled as 1 and the negative class must be labeled as 0.
 %
 %   OUTPUT is an optional parameter determining what value is contained in
-%   the RESULTS function output (default = 'table'). This is useful when
+%   the RESULT function output (default = 'table'). This is useful when
 %   combined with the bootci() function to generate confidence intervals.
 %
-%   RESULTS is determined by the OUTPUT parameter.
+%   RESULT is determined by the OUTPUT parameter.
 %       'table' or 'all': A table containing all the other options
 %       'ACC' or 'Accuracy': Accuracy
 %       'TPR' or 'Sensitivity' or 'Recall': True Positive Rate
@@ -43,22 +43,22 @@ end
 
 if ~isnumeric(DATA)
     disp('data must be numeric');
-    RESULTS = NaN;
+    RESULT = NaN;
     return;
 end
 
 if size(DATA, 2) ~= 2
     disp('DATA must have 2 columns');
-    RESULTS = NaN;
+    RESULT = NaN;
     return;
 end
 
-test = DATA(:, 1);
-crit = DATA(:, 2);
-TP = sum((test == POSCLASS) & (crit == POSCLASS));
-FP = sum((test == POSCLASS) & (crit == NEGCLASS));
-FN = sum((test == NEGCLASS) & (crit == POSCLASS));
-TN = sum((test == NEGCLASS) & (crit == NEGCLASS));
+TEST = DATA(:, 1);
+CRIT = DATA(:, 2);
+TP = sum((TEST == POSCLASS) & (CRIT == POSCLASS));
+FP = sum((TEST == POSCLASS) & (CRIT == NEGCLASS));
+FN = sum((TEST == NEGCLASS) & (CRIT == POSCLASS));
+TN = sum((TEST == NEGCLASS) & (CRIT == NEGCLASS));
 
 ACC = (TP + TN) / (TP + TN + FP + FN);
 TPR = TP / (TP + FN);
@@ -73,31 +73,31 @@ BMI = TPR + TNR - 1;
 MRK = PPV + NPV - 1;
 
 if strcmpi(OUTPUT, 'table') || strcmpi(OUTPUT, 'all')
-    RESULTS = table(ACC, TPR, TNR, PPV, NPV, PLR, NLR, F1S, MCC, BMI, MRK);
+    RESULT = table(ACC, TPR, TNR, PPV, NPV, PLR, NLR, F1S, MCC, BMI, MRK);
 elseif strcmpi(OUTPUT, 'ACC') || strcmpi(OUTPUT, 'Accuracy')
-    RESULTS = ACC;
+    RESULT = ACC;
 elseif strcmpi(OUTPUT, 'TPR') || strcmpi(OUTPUT, 'Sensitivity') || strcmpi(OUTPUT, 'Recall')
-    RESULTS = TPR;
+    RESULT = TPR;
 elseif strcmpi(OUTPUT, 'TNR') || strcmpi(OUTPUT, 'Specificity')
-    RESULTS = TNR;
+    RESULT = TNR;
 elseif strcmpi(OUTPUT, 'PPV') || strcmpi(OUTPUT, 'Precision')
-    RESULTS = PPV;
+    RESULT = PPV;
 elseif strcmpi(OUTPUT, 'NPV')
-    RESULTS = NPV;
+    RESULT = NPV;
 elseif strcmpi(OUTPUT, 'PLR')
-    RESULTS = PLR;
+    RESULT = PLR;
 elseif strcmpi(OUTPUT, 'NLR')
-    RESULTS = NLR;
+    RESULT = NLR;
 elseif strcmpi(OUTPUT, 'F1S') || strcmpi(OUTPUT, 'F1')
-    RESULTS = F1S;
+    RESULT = F1S;
 elseif strcmpi(OUTPUT, 'MCC') || strcmpi(OUTPUT, 'PHI')
-    RESULTS = MCC;
+    RESULT = MCC;
 elseif strcmpi(OUTPUT, 'BMI') || strcmpi(OUTPUT, 'BM')
-    RESULTS = BMI;
+    RESULT = BMI;
 elseif strcmpi(OUTPUT, 'MRK') || strcmpi(OUTPUT, 'MK')
-    RESULTS = MRK;
+    RESULT = MRK;
 else
-    RESULTS = NaN;
+    RESULT = NaN;
 end
 
 end
