@@ -25,7 +25,7 @@ function [ALPHAK, P_O, P_C] = mALPHAK(CODES, CATEGORIES, WEIGHTING)
 %
 %   Example usage: mALPHAK(fishdata, [1, 2, 3], 'identity')
 %   
-%   (c) Jeffrey M Girard, 2016-2018
+%   (c) Jeffrey M Girard, 2016-2021
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -83,7 +83,7 @@ observed = (r_ik .* (rstar_ik - 1)) * ones(q, 1);
 possible = rbar_i .* (r_i - 1);
 P_O = (1 - epsilon) .* sum(observed ./ (possible)) ./ nprime + epsilon;
 %% Calculate percent chance agreement
-pihat = transpose(repmat(1 / n, 1, n) * (r_ik ./ (r_i * ones(1, q))));
+pihat = transpose(repmat(1 / n, 1, n) * (r_ik ./ rbar_i));
 P_C = sum(sum(weights .* (pihat * transpose(pihat))));
 %% Calculate reliability point estimate
 ALPHAK = (P_O - P_C) / (1 - P_C);

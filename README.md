@@ -1,6 +1,6 @@
 # mReliability
 MATLAB Functions for Computing Inter-Observer Reliability
-(c) Jeffrey M Girard, 2016-2018
+(c) Jeffrey M Girard, 2016-2021
 
 mReliability is a collection of open-source functions for calculating inter-observer reliability in the MATLAB environment. Inter-observer reliability quantifies the extent to which measurements from two or more observers are consistent and interchangeable; it constitutes an important source of validity evidence in observational measurement. Inter-observer reliability is especially important in the fields of affective computing and computational behavioral science, where algorithms are developed to automate observational measurement tasks. In these fields, MATLAB (Matrix Laboratory) is often used as a numerical computing environment and programming language. However, indexes of inter-observer reliability are not well-known in these fields and functions for calculating them in MATLAB are not widely-available. mReliability provides functions for calculating all popular chance-adjusted indexes and a number of non-chance-adjusted alternatives, as well as their components, standard errors, and confidence intervals.
 
