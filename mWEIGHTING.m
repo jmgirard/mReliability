@@ -17,14 +17,14 @@ function [WEIGHTS] = mWEIGHTING(CATEGORIES, TYPE)
 %
 %   Example usage: mWEIGHTING(1:5, 'linear')
 %   
-%   (c) Jeffrey M Girard, 2016-2018
+%   (c) Jeffrey M Girard, 2016-2021
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Calculate weights based on data scale
 q = length(CATEGORIES);
 if isnumeric(CATEGORIES)
-    cat = CATEGORIES;
+    cat = double(CATEGORIES);
 else
     cat = 1:q;
 end
