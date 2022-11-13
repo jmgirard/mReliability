@@ -23,8 +23,8 @@ function [ICC, LB, UB] = ICC_C_k(DATA, ALPHA)
 DATA(rowindex, :) = [];
 %% Calculate mean squares from two-way ANOVA
 [~, tbl, ~] = anova2(DATA, 1, 'off');
-MSR = tbl{3, 4};
-MSE = tbl{4, 4};
+MSR = max([0, tbl{3, 4}]);
+MSE = max([0, tbl{4, 4}]);
 %% Calculate average rater consistency ICC
 [n, k] = size(DATA);
 ICC = (MSR - MSE) / MSR;
