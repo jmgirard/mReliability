@@ -23,9 +23,9 @@ function [ICC, LB, UB] = ICC_A_1(DATA, ALPHA)
 DATA(rowindex, :) = [];
 %% Calculate mean squares from two-way ANOVA
 [~, tbl, ~] = anova2(DATA, 1, 'off');
-MSC = tbl{2, 4};
-MSR = tbl{3, 4};
-MSE = tbl{4, 4};
+MSC = max(0, tbl{2, 4});
+MSR = max(0, tbl{3, 4});
+MSE = max(0, tbl{4, 4};
 %% Calculate single rater agreement ICC
 [n, k] = size(DATA);
 ICC = (MSR - MSE) / (MSR + MSE * (k - 1) + (k / n) * (MSC - MSE));
